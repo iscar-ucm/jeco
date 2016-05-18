@@ -1,0 +1,12 @@
+.settings
+bin
+build
+dist
+nbproject
+.classpath
+.project
+build.xml
+manifest.mf
+*.log
+*.log.*
+
