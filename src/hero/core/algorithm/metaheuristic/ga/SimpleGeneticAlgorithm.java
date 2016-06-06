@@ -20,7 +20,6 @@
 package hero.core.algorithm.metaheuristic.ga;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.logging.Logger;
 import hero.core.algorithm.Algorithm;
 import hero.core.operator.comparator.SimpleDominance;
@@ -34,7 +33,7 @@ import hero.core.problem.Variable;
 
 public class SimpleGeneticAlgorithm<V extends Variable<?>> extends Algorithm<V> {
 
-    private static final Logger logger = Logger.getLogger(SimpleGeneticAlgorithm.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(SimpleGeneticAlgorithm.class.getName());
 
     /////////////////////////////////////////////////////////////////////////
     protected Boolean stopWhenSolved = null;
@@ -79,12 +78,12 @@ public class SimpleGeneticAlgorithm<V extends Variable<?>> extends Algorithm<V> 
             int percentage = Math.round((currentGeneration * 100) / maxGenerations);
             Double bestObj = leaders.get(0).getObjectives().get(0);            
             if (percentage == nextPercentageReport) {
-                logger.info(percentage + "% performed ..." + " -- Best fitness: " + bestObj);
+                LOGGER.info(percentage + "% performed ..." + " -- Best fitness: " + bestObj);
                 nextPercentageReport += 10;
             }
             if (stopWhenSolved) {
                 if (bestObj <= 0) {
-                    logger.info("Optimal solution found in " + currentGeneration + " generations.");
+                    LOGGER.info("Optimal solution found in " + currentGeneration + " generations.");
                     break;
                 }
             }

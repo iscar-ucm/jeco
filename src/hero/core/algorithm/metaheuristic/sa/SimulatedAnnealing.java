@@ -16,6 +16,7 @@
  *
  * Contributors:
  *  - José Luis Risco Martín
+ *  - José Manuel Colmenar Verdugo
  */
 package hero.core.algorithm.metaheuristic.sa;
 
@@ -24,15 +25,15 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import hero.core.algorithm.Algorithm;
+import hero.core.operator.comparator.SimpleDominance;
 import hero.core.problem.Problem;
 import hero.core.problem.Solution;
 import hero.core.problem.Solutions;
 import hero.core.problem.Variable;
+import hero.core.util.random.RandomGenerator;
 
 /**
  * Class implementing the simulated annealing technique for problem solving.
@@ -46,16 +47,12 @@ import hero.core.problem.Variable;
  */
 public class SimulatedAnnealing<T extends Variable<?>> extends Algorithm<T> {
 
-    /**
-     * Maximum number of iterations
-     */
-    private long maxIterations = 10000;
-    private long currentMoves = 0;
-    /**
-     * Maximum time in seconds. If 0, then consider maxIterations
-     */
-    private long maxSeconds = 0;
-    private long startTime;
+    private static final Logger LOGGER = Logger.getLogger(SimulatedAnnealing.class.getName());
+
+    ///////////////////////////////////////////////////////////////////////////
+    protected long maxIterations = 10000;
+    protected long currentMoves = 0;
+
     private boolean change;
     private long numChanges = 0;
     private final int LOG_RATIO = 1000;
@@ -64,158 +61,91 @@ public class SimulatedAnnealing<T extends Variable<?>> extends Algorithm<T> {
     private double currentMinimumCost = Double.MAX_VALUE;
     private double initialCost = Double.MAX_VALUE;
     private double k = 1.0;
-    private final int OBJECTIVE = 0;
-    private Comparator<Solution<T>> solutionComparator;
+    ///////////////////////////////////////////////////////////////////////////
+    protected SimpleDominance<T> dominance = new SimpleDominance<>();
+    private Solutions<T> population;
+    protected Solutions<T> leaders;
+
     /**
-     * Current population. Will be just one solution.
+     * Parameterized constructor
+     *
+     * @param maxIterations number of iterations where the search will stop.
+     * @param k is the weight of the temperature
      */
-    private Solutions<T> currPopulation;
-    private final int BESTSOL = 0;
-    /**
-     * Random number generator
-     */
-    private static Random rnd;
-    /**
-     * Logger
-     */
-    private static final Logger logger = Logger.getLogger(SimulatedAnnealing.class.getName());
-    /**
-     * Nome of the log file
-     */
-    public static String logFile = "objectives_log.txt";
+    public SimulatedAnnealing(Problem<T> problem, Long maxIterations, double k) {
+        super(problem);
+        this.maxIterations = maxIterations;
+        this.k = k;
+    }
 
     /**
      * This constructor allows to establish the maximum number of iterations.
      *
      * @param problem
-     * @param maxIter number of iterations where the search will stop.
-     * @param randomSeed seed for random number generation
+     * @param maxIterations number of iterations where the search will stop.
      */
-    public SimulatedAnnealing(Problem<T> problem, Long maxIter, Long randomSeed) {
-        super(problem);
-
-        maxIterations = maxIter;
-        rnd = new Random(randomSeed);
-
-        // Comparator for objective number OBJECTIVE
-        solutionComparator = new Comparator<Solution<T>>() {
-            @Override
-            public int compare(Solution<T> t, Solution<T> t1) {
-                if (t.getObjective(OBJECTIVE) < t1.getObjective(OBJECTIVE)) {
-                    return -1;
-                } else {
-                    if (t.getObjective(OBJECTIVE) > t1.getObjective(OBJECTIVE)) {
-                        return 1;
-                    } else {
-                        return 0;
-                    }
-                }
-            }
-        };
-
+    public SimulatedAnnealing(Problem<T> problem, Long maxIterations) {
+        this(problem, maxIterations, 1.0);
     }
 
-    /**
-     * Parameterized constructor
-     *
-     * @param maxIter number of iterations where the search will stop.
-     * @param k is the weight of the temperature
-     * @param stopWhenFeasible stops the search if finds a feasible solution
-     * @param randomSeed seed for random number generation
-     * @param maxSecs is maximum execution time in seconds. If 0, then consider
-     * max iterations
-     * @param currLogFile is the name of the log file.
-     */
-    public SimulatedAnnealing(Problem<T> problem, Long maxIter, double k,
-            Long randomSeed, Long maxSecs, String currLogFile) {
-        this(problem, maxIter, randomSeed);
-        this.k = k;
-        maxSeconds = maxSecs;
-        logFile = currLogFile;
-    }
-
-    
     @Override
     public void initialize() {
         // Start from a random solution
-        currPopulation = this.problem.newRandomSetOfSolutions(1);
-        Solution<T> bestSolution = currPopulation.get(BESTSOL);
-        problem.evaluate(bestSolution);
-        
+        population = this.problem.newRandomSetOfSolutions(1);
+        leaders = new Solutions<>();
+        problem.evaluate(population);
+        leaders.add(population.get(0).clone());
+
         numChanges = 0;
         change = false;
 
-        // Clean log file:
-        try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(new File(logFile)));
-            writer.close();
-        } catch (IOException ex) {
-            logger.log(Level.SEVERE, null, ex);
-        }
-
         // Logging SA parameters
-        String logStr = "\n# SA Parameters:";
-        logStr += "\n-> K (weight for temperature): " + k;
-        logStr += "\n-> Max. iterations: " + maxIterations;
-        logStr += "\n-> Max. time: " + maxSeconds + " seconds";
-        logStr += "\n";
-
-        logger.log(Level.INFO, logStr);
-
-        initialCost = bestSolution.getObjective(OBJECTIVE);
-
-        startTime = System.currentTimeMillis();
-        
-        // Log starting point:
-        logObjectives();
-
+        StringBuilder logStr = new StringBuilder();
+        logStr.append("\n# SA Parameters:");
+        logStr.append("\n-> K (weight for temperature): ").append(k);
+        logStr.append("\n-> Max. iterations: ").append(maxIterations);
+        logStr.append("\n");
+        LOGGER.info(logStr.toString());
+        initialCost = population.get(0).getObjective(0);
     }
 
-    
     @Override
     public void step() {
-        Solution<T> bestSolution = currPopulation.get(BESTSOL);
-        currentMinimumCost = bestSolution.getObjective(OBJECTIVE);
+        Solution<T> currentSolution = population.get(0);
+        currentMinimumCost = currentSolution.getObjective(0);
 
         // Obtain a neighbour (next state)
-        Solution<T> newSolution = neighbourSolution(bestSolution);
+        Solution<T> newSolution = neighbourSolution(currentSolution);
         problem.evaluate(newSolution);
-
         currentMoves++;
-
         /* Compute neighbour's (state) energy and check if move to
          the neighbour (state) */
-
-        /* If new solution is has best objetive value, change */
-        if (newSolution.compareTo(bestSolution, solutionComparator) < 0) {
+ /* If new solution is has best objetive value, change */
+        if (dominance.compare(newSolution, currentSolution) < 0) {
             change = true;
-        } else {
-            // If new solution is worse, change depends on probability
-            if (changeState(bestSolution, newSolution)) {
+        } else // If new solution is worse, change depends on probability
+        {
+            if (changeState(currentSolution, newSolution)) {
                 change = true;
             }
         }
 
         if (change) {
             numChanges++;
-            currPopulation.remove(BESTSOL);
-            currPopulation.add(newSolution);
-            // Txt for objectives
-            logObjectives();
+            population.set(0, newSolution);
             // Logs detail only if solution changes and following the ratio
             if ((numChanges % LOG_RATIO) == 0) {
                 // Screen and also backups solution to XML file
                 String logStr = "\n# SA -- Iterations: " + currentMoves + " -- Current SA Temperature: " + Double.toString(getTemperature()) + "\n";
-                logStr += "-- Current Best Solution: " + bestSolution + "\n";
+                logStr += "-- Current Best Solution: " + currentSolution + "\n";
                 logStr += "Time: " + getCurrentTimeInSeconds() + " seconds.\n";
-                logger.log(Level.INFO, logStr);
+                LOGGER.log(Level.INFO, logStr);
             }
             change = false;
         }
 
     }
 
-    
     @Override
     public Solutions<T> execute() {
         boolean stopSA = false;
@@ -234,40 +164,38 @@ public class SimulatedAnnealing<T extends Variable<?>> extends Algorithm<T> {
         logObjectives();
         String logStr = "\n# TOTAL SA -- Iterations: " + currentMoves + " -- Current SA Temperature: " + Double.toString(getTemperature()) + "\n";
         logStr += "TOTAL Time: " + getCurrentTimeInSeconds() + " seconds.\n";
-        logger.log(Level.INFO, logStr);
+        LOGGER.log(Level.INFO, logStr);
 
-        return currPopulation;
+        return population;
 
     }
 
-    
     /**
      * Computes probability of changing to new solution. It considers ONLY one
      * objective for energy.
      *
-     * @param oldSol current state
-     * @param newSol possible next state
+     * @param currentSolution current state
+     * @param newSolution possible next state
      * @return true if probability gives chance to change state, false otherwise
      */
-    private boolean changeState(Solution<T> oldSol, Solution<T> newSol) {
+    private boolean changeState(Solution<T> currentSolution, Solution<T> newSolution) {
 
         // Higher cost means new energy to be higher than old energy
         double energyDiff;
-        energyDiff = newSol.getObjective(OBJECTIVE) - oldSol.getObjective(OBJECTIVE);
+        energyDiff = newSolution.getObjective(0) - currentSolution.getObjective(0);
 
         // Compute probability. Must be between 0 and 1.
         double temp = getTemperature();
         double prob = Math.exp(-energyDiff / temp);
 
         // nextDouble returns the next pseudorandom, uniformly distributed double value between 0.0 and 1.0
-        if (rnd.nextDouble() <= prob) {
+        if (RandomGenerator.nextDouble() <= prob) {
             return true;
         } else {
             return false;
         }
     }
 
-    
     /**
      * Obtains the temperature, which is naturally adapted to evolution of the
      * search.
@@ -277,7 +205,6 @@ public class SimulatedAnnealing<T extends Variable<?>> extends Algorithm<T> {
 
     }
 
-    
     /**
      * Logs time and objective values of the best solution to the current
      * logFile
@@ -288,10 +215,10 @@ public class SimulatedAnnealing<T extends Variable<?>> extends Algorithm<T> {
             // Appending
             BufferedWriter writer = new BufferedWriter(new FileWriter(new File(logFile), true));
             // # Time Objective
-            writer.write(getCurrentTimeInSeconds() + " " + currPopulation.get(BESTSOL).getObjective(OBJECTIVE) + "\n");
+            writer.write(getCurrentTimeInSeconds() + " " + population.get(BESTSOL).getObjective(OBJECTIVE) + "\n");
             writer.close();
         } catch (IOException ex) {
-            logger.log(Level.SEVERE, null, ex);
+            LOGGER.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -303,24 +230,21 @@ public class SimulatedAnnealing<T extends Variable<?>> extends Algorithm<T> {
     private Double getCurrentTimeInSeconds() {
         return ((System.currentTimeMillis() - startTime) / 1000.0);
     }
-    
-    
-    
+
     /**
      * Returns a solution where just one variable was changed:
      *
      * @return
      */
-    private Solution<T> neighbourSolution(Solution<T> sol) {
+    private Solution<T> neighbourSolution(Solution<T> currentSolution) {
         // Generate a brand new solution
         ArrayList<T> variables = problem.newRandomSetOfSolutions(1).get(0).getVariables();
         // Randomly choose one variable
-        int i = rnd.nextInt(variables.size());
+        int i = RandomGenerator.nextInt(variables.size());
         // Clone current solution and introduce change.
-        Solution newSol = sol.clone();
-        newSol.getVariable(i).setValue(variables.get(i).getValue());
-        return newSol;
+        Solution newSolution = currentSolution.clone();
+        newSolution.getVariable(i).setValue(variables.get(i).getValue());
+        return newSolution;
     }
-    
-    
+
 }
