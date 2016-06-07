@@ -41,11 +41,11 @@ public class SimulatedAnnealing_example {
      * @param args
      */
     public static void main(String[] args) {
-    	HeroLogger.setup(Level.FINE);
+    	HeroLogger.setup(Level.INFO);
         // First create the problem
         Rastringin problem = new Rastringin(4);
         // Second create the algorithm
-        SimulatedAnnealing<Variable<Double>> algorithm = new SimulatedAnnealing<>(problem, (long)100000, (long)0);
+        SimulatedAnnealing<Variable<Double>> algorithm = new SimulatedAnnealing<>(problem, 100000);
         algorithm.initialize();
         Solutions<Variable<Double>> solutions = algorithm.execute();
         for (Solution<Variable<Double>> solution : solutions) {

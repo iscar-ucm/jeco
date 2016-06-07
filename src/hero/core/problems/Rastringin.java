@@ -70,7 +70,7 @@ public class Rastringin extends Problem<Variable<Double>> {
         }
         solution.getObjectives().set(0, fitness);
         if (fitness < bestValue) {
-            logger.info("Best value found: " + bestValue);
+            logger.info("Best value found: " + fitness);
             bestValue = fitness;
         }
     }
