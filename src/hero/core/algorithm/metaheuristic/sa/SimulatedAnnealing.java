@@ -63,8 +63,10 @@ public class SimulatedAnnealing<T extends Variable<?>> extends Algorithm<T> {
     /**
      * Parameterized constructor
      *
+     * @param problem Problem to be solved
      * @param maxIterations number of iterations where the search will stop.
-     * @param k is the weight of the temperature
+     * @param k is the weight of the temperature (Default = 1.0)
+     * @param targetObj If the algorithm reaches this obj, the optimization stops (Default = Double.NEGATIVE_INFINITY)
      */
     public SimulatedAnnealing(Problem<T> problem, Integer maxIterations, Double k, Double targetObj) {
         super(problem);
@@ -76,7 +78,7 @@ public class SimulatedAnnealing<T extends Variable<?>> extends Algorithm<T> {
     /**
      * This constructor allows to establish the maximum number of iterations.
      *
-     * @param problem
+     * @param problem Problem to be solved
      * @param maxIterations number of iterations where the search will stop.
      */
     public SimulatedAnnealing(Problem<T> problem, Integer maxIterations) {
@@ -99,16 +101,10 @@ public class SimulatedAnnealing<T extends Variable<?>> extends Algorithm<T> {
         currentMinimumCost = currentSolution.getObjective(0);
         Solution<T> newSolution = newSolution();
         problem.evaluate(newSolution);
-
-        boolean move = false;
-        if (dominance.compare(newSolution, currentSolution) < 0) {
-        	move = true;
-        	bestSolution = newSolution.clone();
+        if (dominance.compare(newSolution, bestSolution) < 0) {
+            bestSolution = newSolution.clone();
         }
-        else if(changeState(newSolution)) {
-        	move = true;
-        }
-        if (move) {
+        if (dominance.compare(newSolution, currentSolution) < 0 || changeState(newSolution)) {
             currentSolution = newSolution;
         }
     }
@@ -116,17 +112,17 @@ public class SimulatedAnnealing<T extends Variable<?>> extends Algorithm<T> {
     @Override
     public Solutions<T> execute() {
         int nextPercentageReport = 10;
-        while (currentIteration < maxIterations){
+        while (currentIteration < maxIterations) {
             step();
             int percentage = Math.round((currentIteration * 100) / maxIterations);
-            Double bestObj = bestSolution.getObjectives().get(0);            
+            Double bestObj = bestSolution.getObjectives().get(0);
             if (percentage == nextPercentageReport) {
                 LOGGER.info(percentage + "% performed ..." + " -- Best fitness: " + bestObj);
                 nextPercentageReport += 10;
             }
             if (bestObj <= targetObj) {
-                    LOGGER.info("Optimal solution found in " + currentIteration + " iterations.");
-                    break;
+                LOGGER.info("Optimal solution found in " + currentIteration + " iterations.");
+                break;
             }
         }
         Solutions<T> solutions = problem.newRandomSetOfSolutions(1);
@@ -151,15 +147,12 @@ public class SimulatedAnnealing<T extends Variable<?>> extends Algorithm<T> {
         double prob = Math.exp(-energyDiff / temp);
 
         // nextDouble returns the next pseudorandom, uniformly distributed double value between 0.0 and 1.0
-        if (RandomGenerator.nextDouble() <= prob) {
-            return true;
-        } else {
-            return false;
-        }
+        return RandomGenerator.nextDouble() <= prob;
     }
 
     /**
      * Returns a new solution when just of the variables has changed
+     *
      * @return The new solution.
      */
     private Solution<T> newSolution() {

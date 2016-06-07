@@ -41,7 +41,7 @@ public class SimulatedAnnealing_example {
      * @param args
      */
     public static void main(String[] args) {
-    	HeroLogger.setup(Level.INFO);
+        HeroLogger.setup(Level.INFO);
         // First create the problem
         Rastringin problem = new Rastringin(4);
         // Second create the algorithm
