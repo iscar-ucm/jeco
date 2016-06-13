@@ -36,22 +36,16 @@ import hero.core.problem.Variable;
 import hero.core.util.random.RandomGenerator;
 
 /**
- * Xiaodong Li
- * A Non-dominated Sorting Particle Swarm Optimizer for Multiobjective 
- * Optimization
- * 
+ * Xiaodong Li A Non-dominated Sorting Particle Swarm Optimizer for
+ * Multiobjective Optimization
+ *
  * GECCO-2003, Springer-Verlag, 2003, 2723, 37-48
- * 
- * Input parameters:
- * - C1: PSO c1 factor
- * - C2: PSO c2 factor
- * - CHI: PSO chi factor
- * - MAX_ITERATIONS
- * - NUM_PARTICLES
- * - SORTING_METHOD: CROWDING_DISTANCE, CROWDING_DISTANCE_REPLACE, NICHE_COUNT, NICHE_COUNT_REPLACE
- * - TOP_PART_PERCENTAGE: 0.05 usually, but I am using 0.25
- * - W: PSO w factor
- * 
+ *
+ * Input parameters: - C1: PSO c1 factor - C2: PSO c2 factor - CHI: PSO chi
+ * factor - MAX_ITERATIONS - NUM_PARTICLES - SORTING_METHOD: CROWDING_DISTANCE,
+ * CROWDING_DISTANCE_REPLACE, NICHE_COUNT, NICHE_COUNT_REPLACE -
+ * TOP_PART_PERCENTAGE: 0.05 usually, but I am using 0.25 - W: PSO w factor
+ *
  * @author José L. Risco-Martín
  *
  */
@@ -70,33 +64,57 @@ public class NSPSO<V extends Variable<Double>> extends Algorithm<V> {
     public static final double DEFAULT_C20 = 0.5;
     public static final double DEFAULT_C2T = 2.5;
     /////////////////////////////////////////////////////////////////////////
-    /** PSO c1 factor */
+    /**
+     * PSO c1 factor
+     */
     private double c1;
-    /** PSO c2 factor */
+    /**
+     * PSO c2 factor
+     */
     private double c2;
-    /** PSO chi factor */
+    /**
+     * PSO chi factor
+     */
     protected double chi;
-    /** max iterations */
+    /**
+     * max iterations
+     */
     protected int maxT;
-    /** PSOList size */
+    /**
+     * PSOList size
+     */
     private int swarmSize;
-    /** Sorting method */
+    /**
+     * Sorting method
+     */
     private String sortingMethod;
-    /** number of non dominated particles (percentage) */
+    /**
+     * number of non dominated particles (percentage)
+     */
     private double topPartPercentage;
-    /** PSO w factor */
+    /**
+     * PSO w factor
+     */
     private double w;
     /////////////////////////////////////////////////////////////////////////
-    /** Iterations */
+    /**
+     * Iterations
+     */
     protected int t;
-    /** PSOList */
+    /**
+     * PSOList
+     */
     protected Solutions<V> swarm;
     protected Solutions<V> leaders;
-    /** Dominance operator */
+    /**
+     * Dominance operator
+     */
     private SolutionDominance<V> dominance;
     private ArrayList<Solution<V>> personalBests;
     private double[][] speeds;
-    /** Dynamic parameters */
+    /**
+     * Dynamic parameters
+     */
     protected boolean dynamicParameters = false;
     protected boolean dynamicVelocity = false;
     private double[] delta;
@@ -131,11 +149,24 @@ public class NSPSO<V extends Variable<Double>> extends Algorithm<V> {
         this.dynamicVelocity = dynamicVelocity;
     }
 
+    @Override
+    public void initialize(Solutions<V> initialSolutions) {
+        if (initialSolutions == null) {
+            swarm = problem.newRandomSetOfSolutions(swarmSize);
+        } else {
+            swarm = initialSolutions;
+        }
+        initializeParameters();
+    }
 
     @Override
     public void initialize() {
         // Initialize the swarm
         swarm = problem.newRandomSetOfSolutions(swarmSize);
+        initializeParameters();
+    }
+
+    private void initializeParameters() {
         problem.evaluate(swarm);
         leaders = new Solutions<V>();
         dominance = new SolutionDominance<V>();
@@ -146,10 +177,10 @@ public class NSPSO<V extends Variable<Double>> extends Algorithm<V> {
 
         // Speed and personal bests
         speeds = new double[swarmSize][problem.getNumberOfVariables()];
-        if(dynamicVelocity) {
+        if (dynamicVelocity) {
             delta = new double[problem.getNumberOfVariables()];
             for (int j = 0; j < problem.getNumberOfVariables(); j++) {
-                delta[j] = (problem.getUpperBound(j)-problem.getLowerBound(j))/2;
+                delta[j] = (problem.getUpperBound(j) - problem.getLowerBound(j)) / 2;
             }
         }
         personalBests = new ArrayList<Solution<V>>();
@@ -273,11 +304,13 @@ public class NSPSO<V extends Variable<Double>> extends Algorithm<V> {
                 speeds[i][j] = W * speeds[i][j]
                         + C1 * r1 * (pBest.getValue() - vPart.getValue())
                         + C2 * r2 * (gBest.getValue() - vPart.getValue());
-                if(dynamicVelocity) {
-                    if(speeds[i][j]>delta[j])
+                if (dynamicVelocity) {
+                    if (speeds[i][j] > delta[j]) {
                         speeds[i][j] = delta[j];
-                    if(speeds[i][j]<=-delta[j])
+                    }
+                    if (speeds[i][j] <= -delta[j]) {
                         speeds[i][j] = -delta[j];
+                    }
                 }
             }
 

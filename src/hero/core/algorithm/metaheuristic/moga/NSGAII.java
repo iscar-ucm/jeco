@@ -47,140 +47,156 @@ import hero.core.problem.Variable;
  * @author José L. Risco-Martín
  *
  */
-public class NSGAII<T extends Variable<?>> extends Algorithm<T> {
+public class NSGAII<V extends Variable<?>> extends Algorithm<V> {
 
-  private static final Logger logger = Logger.getLogger(NSGAII.class.getName());
-  /////////////////////////////////////////////////////////////////////////
-  protected int maxGenerations;
-  protected int maxPopulationSize;
-  /////////////////////////////////////////////////////////////////////////
-  protected Comparator<Solution<T>> dominance;
-  protected int currentGeneration;
-  protected Solutions<T> population;
+    private static final Logger logger = Logger.getLogger(NSGAII.class.getName());
+    /////////////////////////////////////////////////////////////////////////
+    protected int maxGenerations;
+    protected int maxPopulationSize;
+    /////////////////////////////////////////////////////////////////////////
+    protected Comparator<Solution<V>> dominance;
+    protected int currentGeneration;
+    protected Solutions<V> population;
 
-  public Solutions<T> getPopulation() {
-    return population;
-  }
-  protected MutationOperator<T> mutationOperator;
-  protected CrossoverOperator<T> crossoverOperator;
-  protected SelectionOperator<T> selectionOperator;
-
-  public NSGAII(Problem<T> problem, int maxPopulationSize, int maxGenerations, MutationOperator<T> mutationOperator, CrossoverOperator<T> crossoverOperator, SelectionOperator<T> selectionOperator) {
-    super(problem);
-    this.maxPopulationSize = maxPopulationSize;
-    this.maxGenerations = maxGenerations;
-    this.mutationOperator = mutationOperator;
-    this.crossoverOperator = crossoverOperator;
-    this.selectionOperator = selectionOperator;
-  }
-
-  @Override
-  public void initialize() {
-    dominance = new SolutionDominance<T>();
-    // Create the initial solutionSet
-    population = problem.newRandomSetOfSolutions(maxPopulationSize);
-    problem.evaluate(population);
-    // Compute crowding distance
-    CrowdingDistance<T> assigner = new CrowdingDistance<T>(problem.getNumberOfObjectives());
-    assigner.execute(population);
-    currentGeneration = 0;
-
-  }
-
-  @Override
-  public Solutions<T> execute() {
-    int nextPercentageReport = 10;
-    while (currentGeneration < maxGenerations) {
-      step();
-      int percentage = Math.round((currentGeneration * 100) / maxGenerations);
-      if (percentage == nextPercentageReport) {
-        logger.info(percentage + "% performed ...");
-        nextPercentageReport += 10;
-      }
-
+    public Solutions<V> getPopulation() {
+        return population;
     }
-    return this.getCurrentSolution();
-  }
+    protected MutationOperator<V> mutationOperator;
+    protected CrossoverOperator<V> crossoverOperator;
+    protected SelectionOperator<V> selectionOperator;
 
-  public Solutions<T> getCurrentSolution() {
-    population.reduceToNonDominated(dominance);
-    return population;
-  }
-
-  public void step() {
-    currentGeneration++;
-    // Create the offSpring solutionSet
-    if (population.size() < 2) {
-      logger.severe("Generation: " + currentGeneration + ". Population size is less than 2.");
-      return;
+    public NSGAII(Problem<V> problem, int maxPopulationSize, int maxGenerations, MutationOperator<V> mutationOperator, CrossoverOperator<V> crossoverOperator, SelectionOperator<V> selectionOperator) {
+        super(problem);
+        this.maxPopulationSize = maxPopulationSize;
+        this.maxGenerations = maxGenerations;
+        this.mutationOperator = mutationOperator;
+        this.crossoverOperator = crossoverOperator;
+        this.selectionOperator = selectionOperator;
     }
 
-    Solutions<T> childPop = new Solutions<T>();
-    Solution<T> parent1, parent2;
-    for (int i = 0; i < (maxPopulationSize / 2); i++) {
-      //obtain parents
-      parent1 = selectionOperator.execute(population).get(0);
-      parent2 = selectionOperator.execute(population).get(0);
-      Solutions<T> offSpring = crossoverOperator.execute(parent1, parent2);
-      for (Solution<T> solution : offSpring) {
-        mutationOperator.execute(solution);
-        childPop.add(solution);
-      }
-    } // for
-    problem.evaluate(childPop);
+    @Override
+    public void initialize() {
+        dominance = new SolutionDominance<>();
+        // Create the initial solutionSet
+        population = problem.newRandomSetOfSolutions(maxPopulationSize);
+        problem.evaluate(population);
+        // Compute crowding distance
+        CrowdingDistance<V> assigner = new CrowdingDistance<>(problem.getNumberOfObjectives());
+        assigner.execute(population);
+        currentGeneration = 0;
 
-    // Create the solutionSet union of solutionSet and offSpring
-    Solutions<T> mixedPop = new Solutions<T>();
-    mixedPop.addAll(population);
-    mixedPop.addAll(childPop);
-
-    // Reducing the union
-    population = reduce(mixedPop, maxPopulationSize);
-    logger.fine("Generation " + currentGeneration + "/" + maxGenerations + "\n" + population.toString());
-  } // step
-
-  public Solutions<T> reduce(Solutions<T> pop, int maxSize) {
-    FrontsExtractor<T> extractor = new FrontsExtractor<T>(dominance);
-    ArrayList<Solutions<T>> fronts = extractor.execute(pop);
-
-    Solutions<T> reducedPop = new Solutions<T>();
-    CrowdingDistance<T> assigner = new CrowdingDistance<T>(problem.getNumberOfObjectives());
-    Solutions<T> front;
-    int i = 0;
-    while (reducedPop.size() < maxSize && i < fronts.size()) {
-      front = fronts.get(i);
-      assigner.execute(front);
-      reducedPop.addAll(front);
-      i++;
     }
 
-    ComparatorNSGAII<T> comparator = new ComparatorNSGAII<T>();
-    if (reducedPop.size() > maxSize) {
-      Collections.sort(reducedPop, comparator);
-      while (reducedPop.size() > maxSize) {
-        reducedPop.remove(reducedPop.size() - 1);
-      }
+    @Override
+    public void initialize(Solutions<V> initialSolutions) {
+        if (initialSolutions == null) {
+            population = problem.newRandomSetOfSolutions(maxPopulationSize);
+        } else {
+            population = initialSolutions;
+        }
+        dominance = new SolutionDominance<>();
+        problem.evaluate(population);
+        // Compute crowding distance
+        CrowdingDistance<V> assigner = new CrowdingDistance<>(problem.getNumberOfObjectives());
+        assigner.execute(population);
+        currentGeneration = 0;
     }
-    return reducedPop;
-  }
 
-  public void setMutationOperator(MutationOperator<T> mutationOperator) {
-    this.mutationOperator = mutationOperator;
-  }
+    @Override
+    public Solutions<V> execute() {
+        int nextPercentageReport = 10;
+        while (currentGeneration < maxGenerations) {
+            step();
+            int percentage = Math.round((currentGeneration * 100) / maxGenerations);
+            if (percentage == nextPercentageReport) {
+                logger.info(percentage + "% performed ...");
+                nextPercentageReport += 10;
+            }
 
-  public void setCrossoverOperator(CrossoverOperator<T> crossoverOperator) {
-    this.crossoverOperator = crossoverOperator;
-  }
+        }
+        return this.getCurrentSolution();
+    }
 
-  public void setSelectionOperator(SelectionOperator<T> selectionOperator) {
-    this.selectionOperator = selectionOperator;
-  }
+    public Solutions<V> getCurrentSolution() {
+        population.reduceToNonDominated(dominance);
+        return population;
+    }
 
-  public void setMaxGenerations(int maxGenerations) {
-    this.maxGenerations = maxGenerations;
-  }
+    @Override
+    public void step() {
+        currentGeneration++;
+        // Create the offSpring solutionSet
+        if (population.size() < 2) {
+            logger.severe("Generation: " + currentGeneration + ". Population size is less than 2.");
+            return;
+        }
 
-  public void setMaxPopulationSize(int maxPopulationSize) {
-    this.maxPopulationSize = maxPopulationSize;
-  }
+        Solutions<V> childPop = new Solutions<V>();
+        Solution<V> parent1, parent2;
+        for (int i = 0; i < (maxPopulationSize / 2); i++) {
+            //obtain parents
+            parent1 = selectionOperator.execute(population).get(0);
+            parent2 = selectionOperator.execute(population).get(0);
+            Solutions<V> offSpring = crossoverOperator.execute(parent1, parent2);
+            for (Solution<V> solution : offSpring) {
+                mutationOperator.execute(solution);
+                childPop.add(solution);
+            }
+        } // for
+        problem.evaluate(childPop);
+
+        // Create the solutionSet union of solutionSet and offSpring
+        Solutions<V> mixedPop = new Solutions<V>();
+        mixedPop.addAll(population);
+        mixedPop.addAll(childPop);
+
+        // Reducing the union
+        population = reduce(mixedPop, maxPopulationSize);
+        logger.fine("Generation " + currentGeneration + "/" + maxGenerations + "\n" + population.toString());
+    } // step
+
+    public Solutions<V> reduce(Solutions<V> pop, int maxSize) {
+        FrontsExtractor<V> extractor = new FrontsExtractor<V>(dominance);
+        ArrayList<Solutions<V>> fronts = extractor.execute(pop);
+
+        Solutions<V> reducedPop = new Solutions<V>();
+        CrowdingDistance<V> assigner = new CrowdingDistance<V>(problem.getNumberOfObjectives());
+        Solutions<V> front;
+        int i = 0;
+        while (reducedPop.size() < maxSize && i < fronts.size()) {
+            front = fronts.get(i);
+            assigner.execute(front);
+            reducedPop.addAll(front);
+            i++;
+        }
+
+        ComparatorNSGAII<V> comparator = new ComparatorNSGAII<>();
+        if (reducedPop.size() > maxSize) {
+            Collections.sort(reducedPop, comparator);
+            while (reducedPop.size() > maxSize) {
+                reducedPop.remove(reducedPop.size() - 1);
+            }
+        }
+        return reducedPop;
+    }
+
+    public void setMutationOperator(MutationOperator<V> mutationOperator) {
+        this.mutationOperator = mutationOperator;
+    }
+
+    public void setCrossoverOperator(CrossoverOperator<V> crossoverOperator) {
+        this.crossoverOperator = crossoverOperator;
+    }
+
+    public void setSelectionOperator(SelectionOperator<V> selectionOperator) {
+        this.selectionOperator = selectionOperator;
+    }
+
+    public void setMaxGenerations(int maxGenerations) {
+        this.maxGenerations = maxGenerations;
+    }
+
+    public void setMaxPopulationSize(int maxPopulationSize) {
+        this.maxPopulationSize = maxPopulationSize;
+    }
 }

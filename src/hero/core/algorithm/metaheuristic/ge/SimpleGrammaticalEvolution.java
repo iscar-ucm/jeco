@@ -32,25 +32,30 @@ import hero.core.problem.Variable;
 
 /**
  * Grammatical evolution using just one objective.
- * 
+ *
  * @author J. M. Colmenar
  */
 public class SimpleGrammaticalEvolution extends Algorithm<Variable<Integer>> {
 
     SimpleGeneticAlgorithm<Variable<Integer>> algorithm;
-    
+
     public SimpleGrammaticalEvolution(Problem<Variable<Integer>> problem, int maxPopulationSize, int maxGenerations, double probMutation, double probCrossover) {
         super(problem);
-        
+
         // Algorithm operators
-        IntegerFlipMutation<Variable<Integer>> mutationOperator = new IntegerFlipMutation<Variable<Integer>>(problem, probMutation);
-        SinglePointCrossover<Variable<Integer>> crossoverOperator = new SinglePointCrossover<Variable<Integer>>(problem, SinglePointCrossover.DEFAULT_FIXED_CROSSOVER_POINT, probCrossover, SinglePointCrossover.ALLOW_REPETITION);
-        SimpleDominance<Variable<Integer>> comparator = new SimpleDominance<Variable<Integer>>();
-        BinaryTournament<Variable<Integer>> selectionOp = new BinaryTournament<Variable<Integer>>(comparator);
-        
-        algorithm = new SimpleGeneticAlgorithm<Variable<Integer>>(problem, 
+        IntegerFlipMutation<Variable<Integer>> mutationOperator = new IntegerFlipMutation<>(problem, probMutation);
+        SinglePointCrossover<Variable<Integer>> crossoverOperator = new SinglePointCrossover<>(problem, SinglePointCrossover.DEFAULT_FIXED_CROSSOVER_POINT, probCrossover, SinglePointCrossover.ALLOW_REPETITION);
+        SimpleDominance<Variable<Integer>> comparator = new SimpleDominance<>();
+        BinaryTournament<Variable<Integer>> selectionOp = new BinaryTournament<>(comparator);
+
+        algorithm = new SimpleGeneticAlgorithm<>(problem,
                 maxPopulationSize, maxGenerations, true, mutationOperator, crossoverOperator, selectionOp);
-        
+
+    }
+
+    @Override
+    public void initialize(Solutions<Variable<Integer>> initialSolutions) {
+        algorithm.initialize(initialSolutions);
     }
 
     @Override

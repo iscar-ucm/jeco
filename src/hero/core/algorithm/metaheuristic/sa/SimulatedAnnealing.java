@@ -66,7 +66,8 @@ public class SimulatedAnnealing<T extends Variable<?>> extends Algorithm<T> {
      * @param problem Problem to be solved
      * @param maxIterations number of iterations where the search will stop.
      * @param k is the weight of the temperature (Default = 1.0)
-     * @param targetObj If the algorithm reaches this obj, the optimization stops (Default = Double.NEGATIVE_INFINITY)
+     * @param targetObj If the algorithm reaches this obj, the optimization
+     * stops (Default = Double.NEGATIVE_INFINITY)
      */
     public SimulatedAnnealing(Problem<T> problem, Integer maxIterations, Double k, Double targetObj) {
         super(problem);
@@ -83,6 +84,18 @@ public class SimulatedAnnealing<T extends Variable<?>> extends Algorithm<T> {
      */
     public SimulatedAnnealing(Problem<T> problem, Integer maxIterations) {
         this(problem, maxIterations, 1.0, Double.NEGATIVE_INFINITY);
+    }
+
+    public void initialize(Solutions<T> initialSolutions) {
+        if (initialSolutions == null) {
+            currentSolution = this.problem.newRandomSetOfSolutions(1).get(0);
+        } else {
+            currentSolution = initialSolutions.get(0);
+        }
+        problem.evaluate(currentSolution);
+        bestSolution = currentSolution.clone();
+        initialCost = currentSolution.getObjective(0);
+        currentIteration = 0;
     }
 
     @Override

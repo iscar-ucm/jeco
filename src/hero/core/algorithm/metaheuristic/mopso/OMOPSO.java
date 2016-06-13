@@ -36,19 +36,17 @@ import hero.core.problem.Variable;
 import hero.core.util.random.RandomGenerator;
 
 /**
- * 
- * 
- * Input parameters:
- * - MAX_GENERATIONS
- * - MAX_POPULATION_SIZE
- * 
+ *
+ *
+ * Input parameters: - MAX_GENERATIONS - MAX_POPULATION_SIZE
+ *
  * @author José L. Risco-Martín
  *
  */
 public class OMOPSO<V extends Variable<Double>> extends Algorithm<V> {
 
     private static final Logger logger = Logger.getLogger(OMOPSO.class.getName());
-    
+
     private int swarmSize;
     protected int maxT;
     protected int t;
@@ -84,14 +82,31 @@ public class OMOPSO<V extends Variable<Double>> extends Algorithm<V> {
      * Initialize all parameter of the algorithm
      */
     @Override
+    public void initialize(Solutions<V> initialSolutions) {
+        if (initialSolutions == null) {
+            swarm = problem.newRandomSetOfSolutions(swarmSize);
+        } else {
+            swarm = initialSolutions;
+        }
+        initializeParameters();
+    }
+
+    /**
+     * Initialize all parameter of the algorithm
+     */
+    @Override
     public void initialize() {
 
-        swarm =  problem.newRandomSetOfSolutions(swarmSize);
-        personalBests = new Solutions<V>();
-        for(int i=0; i<swarmSize; ++i) {
+        swarm = problem.newRandomSetOfSolutions(swarmSize);
+        initializeParameters();
+    }
+
+    private void initializeParameters() {
+        personalBests = new Solutions<>();
+        for (int i = 0; i < swarmSize; ++i) {
             personalBests.add(swarm.get(i).clone());
         }
-        leaders = new Solutions<V>();
+        leaders = new Solutions<>();
 
         // Create the dominator for equadless and dominance
         objectivesComparator = new SolutionDominance<V>();
@@ -100,16 +115,15 @@ public class OMOPSO<V extends Variable<Double>> extends Algorithm<V> {
 
         // Create the speed_ vector
         speeds = new double[swarmSize][problem.getNumberOfVariables()];
-        if(dynamicVelocity) {
+        if (dynamicVelocity) {
             delta = new double[problem.getNumberOfVariables()];
             for (int j = 0; j < problem.getNumberOfVariables(); j++) {
-                delta[j] = (problem.getUpperBound(j)-problem.getLowerBound(j))/2;
+                delta[j] = (problem.getUpperBound(j) - problem.getLowerBound(j)) / 2;
             }
         }
 
         uniformMutation = new UniformMutation<V>(problem);
         nonUniformMutation = new NonUniformMutation<V>(problem, maxT);
-
 
         t = 0;
         //->Step 1 (and 3) Evaluate initial population
@@ -121,7 +135,6 @@ public class OMOPSO<V extends Variable<Double>> extends Algorithm<V> {
                 speeds[i][j] = 0.0;
             }
         }
-
 
         // Step4 and 5
         for (Solution<V> particle : swarm) {
@@ -139,7 +152,6 @@ public class OMOPSO<V extends Variable<Double>> extends Algorithm<V> {
 
         //Crowding the leaders
         //crowdingDistanceAssigner.execute(leaders);
-
     } // initialize
 
     public void reduceLeaders() {
@@ -197,11 +209,11 @@ public class OMOPSO<V extends Variable<Double>> extends Algorithm<V> {
                 speeds[i][j] = W * speeds[i][j]
                         + C1 * r1 * (pBest.getValue() - vPart.getValue())
                         + C2 * r2 * (gBest.getValue() - vPart.getValue());
-                if(dynamicVelocity) {
-                    if(speeds[i][j]>delta[j]) {
+                if (dynamicVelocity) {
+                    if (speeds[i][j] > delta[j]) {
                         speeds[i][j] = delta[j];
                     }
-                    if(speeds[i][j]<=-delta[j]) {
+                    if (speeds[i][j] <= -delta[j]) {
                         speeds[i][j] = -delta[j];
                     }
                 }
@@ -254,14 +266,15 @@ public class OMOPSO<V extends Variable<Double>> extends Algorithm<V> {
 
     /**
      * Runs of the OMOPSO algorithm.
-     * @return a <code>SolutionSet</code> that is a set of non dominated solutions
-     * as a result of the algorithm execution
+     *
+     * @return a <code>SolutionSet</code> that is a set of non dominated
+     * solutions as a result of the algorithm execution
      * @throws JMException
      */
     @Override
     public Solutions<V> execute() {
         int nextPercentageReport = 10;
-       
+
         //-> Step 7. Iterations ..
         while (t < maxT) {
             step();
@@ -313,7 +326,6 @@ public class OMOPSO<V extends Variable<Double>> extends Algorithm<V> {
 
         //Crowding the leaders_
         //crowdingDistanceAssigner.execute(leaders);
-
     }
 
     public void setSwarmSize(int swarmSize) {

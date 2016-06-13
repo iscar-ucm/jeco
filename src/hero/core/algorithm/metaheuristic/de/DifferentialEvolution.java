@@ -100,6 +100,19 @@ public class DifferentialEvolution extends Algorithm<Variable<Double>> {
     }
 
     @Override
+    public void initialize(Solutions<Variable<Double>> initialSolutions) {
+        if (initialSolutions == null) {
+            population = problem.newRandomSetOfSolutions(np);
+        }
+        else {
+            population = initialSolutions;
+        }
+        problem.evaluate(population);
+        Collections.sort(population, dominance);
+        currentGeneration = 0;
+    }
+
+    @Override
     public void initialize() {
         population = problem.newRandomSetOfSolutions(np);
         problem.evaluate(population);

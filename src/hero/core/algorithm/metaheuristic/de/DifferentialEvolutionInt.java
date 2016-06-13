@@ -106,6 +106,19 @@ public class DifferentialEvolutionInt extends Algorithm<Variable<Integer>> {
     }
 
     
+    @Override
+    public void initialize(Solutions<Variable<Integer>> initialSolutions) {
+        if (initialSolutions == null) {
+            population = problem.newRandomSetOfSolutions(np);
+        }
+        else {
+            population = initialSolutions;
+        }
+        problem.evaluate(population);
+        Collections.sort(population, dominance);        
+        currentGeneration = 0;
+    }
+
     /**
      * Returns a target vector from the population selected by random
      * not selected before, and different to i.

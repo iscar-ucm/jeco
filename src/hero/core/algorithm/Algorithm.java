@@ -40,8 +40,17 @@ public abstract class Algorithm<V extends Variable<?>> {
   public void setProblem(Problem<V> problem) {
     this.problem = problem;
   }
+  
+  /**
+   * Initializes the algorithm
+   * @param initialSolutions initial population. If null, a random population is generated.
+   */
+  public abstract void initialize(Solutions<V> initialSolutions); 
 
-  public abstract void initialize();
+  /**
+   * @deprecated Initializes the algorithm with a random population.
+   */
+  public abstract void initialize(); 
 
   public abstract void step();
 

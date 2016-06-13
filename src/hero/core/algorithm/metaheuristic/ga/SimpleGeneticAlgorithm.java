@@ -59,6 +59,22 @@ public class SimpleGeneticAlgorithm<V extends Variable<?>> extends Algorithm<V> 
     }
 
     @Override
+    public void initialize(Solutions<V> initialSolutions) {
+        if (initialSolutions == null) {
+            population = problem.newRandomSetOfSolutions(maxPopulationSize);
+        } else {
+            population = initialSolutions;
+        }
+        leaders = new Solutions<>();
+        problem.evaluate(population);
+        for (Solution<V> solution : population) {
+            leaders.add(solution.clone());
+        }
+        reduceLeaders();
+        currentGeneration = 0;
+    }
+
+    @Override
     public void initialize() {
         population = problem.newRandomSetOfSolutions(maxPopulationSize);
         leaders = new Solutions<>();
@@ -73,10 +89,10 @@ public class SimpleGeneticAlgorithm<V extends Variable<?>> extends Algorithm<V> 
     @Override
     public Solutions<V> execute() {
         int nextPercentageReport = 10;
-        while (currentGeneration < maxGenerations){
+        while (currentGeneration < maxGenerations) {
             step();
             int percentage = Math.round((currentGeneration * 100) / maxGenerations);
-            Double bestObj = leaders.get(0).getObjectives().get(0);            
+            Double bestObj = leaders.get(0).getObjectives().get(0);
             if (percentage == nextPercentageReport) {
                 LOGGER.info(percentage + "% performed ..." + " -- Best fitness: " + bestObj);
                 nextPercentageReport += 10;
@@ -88,7 +104,7 @@ public class SimpleGeneticAlgorithm<V extends Variable<?>> extends Algorithm<V> 
                 }
             }
         }
-        
+
         return leaders;
     }
 
@@ -145,7 +161,7 @@ public class SimpleGeneticAlgorithm<V extends Variable<?>> extends Algorithm<V> 
     public Solutions<V> getSolutions() {
         return population;
     }
-    
+
     public Solutions<V> getLeaders() {
         return leaders;
     }

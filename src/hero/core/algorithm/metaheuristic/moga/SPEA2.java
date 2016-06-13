@@ -37,17 +37,13 @@ import hero.core.problem.Solutions;
 import hero.core.problem.Variable;
 
 /**
- * 
- * 
- * Input parameters:
- * - MAX_GENERATIONS
- * - MAX_POPULATION_SIZE
- * 
- * Operators:
- * - CROSSOVER: Crossover operator
- * - MUTATION: Mutation operator
- * - SELECTION: Selection operator
- * 
+ *
+ *
+ * Input parameters: - MAX_GENERATIONS - MAX_POPULATION_SIZE
+ *
+ * Operators: - CROSSOVER: Crossover operator - MUTATION: Mutation operator -
+ * SELECTION: Selection operator
+ *
  * @author José L. Risco-Martín
  *
  */
@@ -75,12 +71,28 @@ public class SPEA2<T extends Variable<?>> extends Algorithm<T> {
         this.selectionOperator = selectionOperator;
     }
 
-    public void initialize() {
+    @Override
+    public void initialize(Solutions<T> initialSolutions) {
+        if (initialSolutions == null) {
+            population = problem.newRandomSetOfSolutions(maxPopulationSize);
+        } else {
+            population = initialSolutions;
+        }
         dominance = new SolutionDominance<T>();
         K = (int) Math.sqrt(maxPopulationSize + maxPopulationSize);
         //Initialize the variables
         archive = new Solutions<T>();
+        problem.evaluate(population);
+        currentGeneration = 0;
+    }
+
+    @Override
+    public void initialize() {
         population = problem.newRandomSetOfSolutions(maxPopulationSize);
+        dominance = new SolutionDominance<T>();
+        K = (int) Math.sqrt(maxPopulationSize + maxPopulationSize);
+        //Initialize the variables
+        archive = new Solutions<T>();
         problem.evaluate(population);
         currentGeneration = 0;
     }
