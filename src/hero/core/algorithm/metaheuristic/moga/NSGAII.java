@@ -75,19 +75,6 @@ public class NSGAII<V extends Variable<?>> extends Algorithm<V> {
     }
 
     @Override
-    public void initialize() {
-        dominance = new SolutionDominance<>();
-        // Create the initial solutionSet
-        population = problem.newRandomSetOfSolutions(maxPopulationSize);
-        problem.evaluate(population);
-        // Compute crowding distance
-        CrowdingDistance<V> assigner = new CrowdingDistance<>(problem.getNumberOfObjectives());
-        assigner.execute(population);
-        currentGeneration = 0;
-
-    }
-
-    @Override
     public void initialize(Solutions<V> initialSolutions) {
         if (initialSolutions == null) {
             population = problem.newRandomSetOfSolutions(maxPopulationSize);

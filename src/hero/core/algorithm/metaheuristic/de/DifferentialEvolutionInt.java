@@ -58,9 +58,9 @@ public class DifferentialEvolutionInt extends Algorithm<Variable<Integer>> {
     protected double gr = 0;                 // Recombination factor
     
     /////////////////////////////////////////////////////////////////////////
-    protected SimpleDominance<Variable<Integer>> dominance = new SimpleDominance<Variable<Integer>>();
+    protected SimpleDominance<Variable<Integer>> dominance = new SimpleDominance<>();
     /////////////////////////////////////////////////////////////////////////
-    protected HashSet<Integer> alreadyChosen = new HashSet<Integer>();
+    protected HashSet<Integer> alreadyChosen = new HashSet<>();
     
     
     /**
@@ -96,15 +96,6 @@ public class DifferentialEvolutionInt extends Algorithm<Variable<Integer>> {
         }        
     }
         
-    
-    @Override
-    public void initialize() {
-        population = problem.newRandomSetOfSolutions(np);
-        problem.evaluate(population);
-        Collections.sort(population, dominance);        
-        currentGeneration = 0;
-    }
-
     
     @Override
     public void initialize(Solutions<Variable<Integer>> initialSolutions) {

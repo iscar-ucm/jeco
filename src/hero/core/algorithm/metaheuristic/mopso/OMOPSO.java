@@ -88,20 +88,6 @@ public class OMOPSO<V extends Variable<Double>> extends Algorithm<V> {
         } else {
             swarm = initialSolutions;
         }
-        initializeParameters();
-    }
-
-    /**
-     * Initialize all parameter of the algorithm
-     */
-    @Override
-    public void initialize() {
-
-        swarm = problem.newRandomSetOfSolutions(swarmSize);
-        initializeParameters();
-    }
-
-    private void initializeParameters() {
         personalBests = new Solutions<>();
         for (int i = 0; i < swarmSize; ++i) {
             personalBests.add(swarm.get(i).clone());

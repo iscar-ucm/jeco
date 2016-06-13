@@ -65,20 +65,8 @@ public class SimpleGeneticAlgorithm<V extends Variable<?>> extends Algorithm<V> 
         } else {
             population = initialSolutions;
         }
-        leaders = new Solutions<>();
         problem.evaluate(population);
-        for (Solution<V> solution : population) {
-            leaders.add(solution.clone());
-        }
-        reduceLeaders();
-        currentGeneration = 0;
-    }
-
-    @Override
-    public void initialize() {
-        population = problem.newRandomSetOfSolutions(maxPopulationSize);
         leaders = new Solutions<>();
-        problem.evaluate(population);
         for (Solution<V> solution : population) {
             leaders.add(solution.clone());
         }

@@ -156,17 +156,6 @@ public class NSPSO<V extends Variable<Double>> extends Algorithm<V> {
         } else {
             swarm = initialSolutions;
         }
-        initializeParameters();
-    }
-
-    @Override
-    public void initialize() {
-        // Initialize the swarm
-        swarm = problem.newRandomSetOfSolutions(swarmSize);
-        initializeParameters();
-    }
-
-    private void initializeParameters() {
         problem.evaluate(swarm);
         leaders = new Solutions<V>();
         dominance = new SolutionDominance<V>();

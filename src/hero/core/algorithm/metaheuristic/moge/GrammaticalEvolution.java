@@ -95,18 +95,6 @@ public class GrammaticalEvolution extends Algorithm<Variable<Integer>> {
     }
 
     @Override
-    public void initialize() {
-        // Create the initial solutionSet
-        population = problem.newRandomSetOfSolutions(maxPopulationSize);
-        problem.evaluate(population);
-        dominance = new SolutionDominance<>();
-        // Compute crowding distance
-        CrowdingDistance<Variable<Integer>> assigner = new CrowdingDistance<Variable<Integer>>(problem.getNumberOfObjectives());
-        assigner.execute(population);
-        currentGeneration = 0;
-    }
-
-    @Override
     public Solutions<Variable<Integer>> execute() {
         int nextPercentageReport = 10;
         while (currentGeneration < maxGenerations) {

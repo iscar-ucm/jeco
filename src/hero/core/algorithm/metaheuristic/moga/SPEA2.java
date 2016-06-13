@@ -87,16 +87,6 @@ public class SPEA2<T extends Variable<?>> extends Algorithm<T> {
     }
 
     @Override
-    public void initialize() {
-        population = problem.newRandomSetOfSolutions(maxPopulationSize);
-        dominance = new SolutionDominance<T>();
-        K = (int) Math.sqrt(maxPopulationSize + maxPopulationSize);
-        //Initialize the variables
-        archive = new Solutions<T>();
-        problem.evaluate(population);
-        currentGeneration = 0;
-    }
-
     public Solutions<T> execute() {
         while (currentGeneration < maxGenerations) {
             step();

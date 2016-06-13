@@ -46,11 +46,10 @@ public abstract class Algorithm<V extends Variable<?>> {
    * @param initialSolutions initial population. If null, a random population is generated.
    */
   public abstract void initialize(Solutions<V> initialSolutions); 
-
-  /**
-   * @deprecated Initializes the algorithm with a random population.
-   */
-  public abstract void initialize(); 
+  
+  public void initialize() {
+      this.initialize(null);
+  }
 
   public abstract void step();
 

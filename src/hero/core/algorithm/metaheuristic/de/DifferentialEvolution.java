@@ -112,14 +112,6 @@ public class DifferentialEvolution extends Algorithm<Variable<Double>> {
         currentGeneration = 0;
     }
 
-    @Override
-    public void initialize() {
-        population = problem.newRandomSetOfSolutions(np);
-        problem.evaluate(population);
-        Collections.sort(population, dominance);
-        currentGeneration = 0;
-    }
-
     /**
      * Returns a target vector from the population selected by random not
      * selected before, and different to i.

@@ -87,14 +87,6 @@ public class EvolutionaryStrategy<V extends Variable<?>> extends Algorithm<V> {
     }
 
     @Override
-    public void initialize() {
-        // Create the initial solutionSet
-        muPopulation = problem.newRandomSetOfSolutions(mu);
-        problem.evaluate(muPopulation);
-        currentGeneration = 0;
-    }
-
-    @Override
     public Solutions<V> execute() {
         int nextPercentageReport = 10;
         while (currentGeneration < maxGenerations) {

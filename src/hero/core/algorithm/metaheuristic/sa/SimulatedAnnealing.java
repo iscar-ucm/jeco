@@ -99,16 +99,6 @@ public class SimulatedAnnealing<T extends Variable<?>> extends Algorithm<T> {
     }
 
     @Override
-    public void initialize() {
-        // Start from a random solution
-        currentSolution = this.problem.newRandomSetOfSolutions(1).get(0);
-        problem.evaluate(currentSolution);
-        bestSolution = currentSolution.clone();
-        initialCost = currentSolution.getObjective(0);
-        currentIteration = 0;
-    }
-
-    @Override
     public void step() {
         currentIteration++;
         currentMinimumCost = currentSolution.getObjective(0);
