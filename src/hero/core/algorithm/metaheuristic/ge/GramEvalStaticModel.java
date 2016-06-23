@@ -19,10 +19,8 @@
  */
 package hero.core.algorithm.metaheuristic.ge;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -30,7 +28,6 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import hero.core.algorithm.metaheuristic.ga.SimpleGeneticAlgorithm;
@@ -58,26 +55,23 @@ public class GramEvalStaticModel extends AbstractProblemGE {
 
     private static final Logger LOGGER = Logger.getLogger(GramEvalStaticModel.class.getName());
 
+    protected String bnfFilePath;
     protected int threadId;
     protected MyCompiler compiler;
     protected DataTable dataTable;
-    protected Properties properties;
     protected AbstractPopPredictor predictor;
-    protected String[] varNames;
     protected double bestFitness = Double.POSITIVE_INFINITY;
-    protected String bestExpression = "";
 
-    public GramEvalStaticModel(Properties properties, int threadId) throws IOException {
-        super(properties.getProperty("BnfPathFile"), 1);
-        this.properties = properties; // Just for its use in "clone" member function
+    public GramEvalStaticModel(String bnfFilePath, String dataPath, String compilationDir, String classPathSeparator, int threadId) throws IOException {
+        super(bnfFilePath, 1);
+        this.bnfFilePath = bnfFilePath;
         this.threadId = threadId;
-        compiler = new MyCompiler(properties);
-        dataTable = new DataTable(this, properties.getProperty("DataPath"));
-        varNames = properties.getProperty("VarNames").split(";");
+        compiler = new MyCompiler(compilationDir, classPathSeparator);
+        dataTable = new DataTable(this, dataPath);
     }
 
-    public GramEvalStaticModel(Properties properties) throws IOException {
-        this(properties, 1);
+    public GramEvalStaticModel(String bnfFilePath, String dataPath, String compilationDir, String classPathSeparator) throws IOException {
+        this(bnfFilePath, dataPath, compilationDir, classPathSeparator, 1);
     }
 
     public void generateCodeAndCompile(Solutions<Variable<Integer>> solutions) throws Exception {
@@ -88,7 +82,7 @@ public class GramEvalStaticModel extends AbstractProblemGE {
             if (super.correctSol) {
                 phenotypes.add(phenotype.toString());
             } else {
-                phenotypes.add("0");
+                phenotypes.add("return 0;");
             }
         }
         // Compilation process:
@@ -106,61 +100,30 @@ public class GramEvalStaticModel extends AbstractProblemGE {
         }
     }
 
-    public double computeRMSE(double[] y, double[] yP) {
-        double rmse = 0;
-        for (int j = 0; j < y.length; ++j) {
-            rmse += Math.pow(y[j] - yP[j], 2);
-        }
-        rmse = Math.sqrt(rmse / y.length);
-        return rmse;
-    }
-
     @Override
     public void evaluate(Solutions<Variable<Integer>> solutions) {
         try {
             this.generateCodeAndCompile(solutions);
             // And now we evaluate all the solutions with the compiled file:
             predictor = (AbstractPopPredictor) (new MyLoader(compiler.getWorkDir())).loadClass("PopPredictor" + threadId).newInstance();
-            double[][] x = null;
-            double[] y = null;
             for (int i = 0; i < solutions.size(); ++i) {
-                double[] yP = predictor.computeYP(i, x);
-                double rmse = computeRMSE(y, yP);
-                if (rmse < bestFitness) {
-                    bestFitness = rmse;
-                    bestExpression = super.generatePhenotype(solutions.get(i)).toString();
-                    for (int j = 0; j < varNames.length - 1; ++j) {
-                        bestExpression = bestExpression.replaceAll("x\\[" + j + "\\]", varNames[j]);
+                predictor.updatePredictor(dataTable, i);
+                //double fit = dataTable.computeFIT();
+                double fit = 0.0;
+                for(double[] row : dataTable.getData()) {
+                    if(row[0]!=row[dataTable.getPredictorColumn()]) {
+                        fit++;
                     }
-                    LOGGER.info("Best FIT=" + bestFitness + "; Expresion=" + bestExpression);
                 }
-                solutions.get(i).getObjectives().set(0, rmse);
+                if (fit < bestFitness) {
+                    bestFitness = fit;
+                    LOGGER.info("Best FIT=" + Math.round(100 * (1 - bestFitness)) + "%");
+                }
+                solutions.get(i).getObjectives().set(0, fit);
             }
         } catch (Exception ex) {
             Logger.getLogger(GramEvalStaticModel.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-    public void validate(Solutions<Variable<Integer>> solutions) {
-        try {
-            this.generateCodeAndCompile(solutions);
-            // And now we evaluate all the solutions with the compiled file:
-            predictor = (AbstractPopPredictor) (new MyLoader(compiler.getWorkDir())).loadClass("PopPredictor" + threadId).newInstance();
-            double[][] x = null;
-            double[] y = null;
-            for (int i = 0; i < solutions.size(); ++i) {
-                double[] yP = predictor.computeYP(i, x);
-                double rmse = computeRMSE(y, yP);
-                solutions.get(i).getObjectives().set(0, rmse);
-            }
-        } catch (Exception ex) {
-            Logger.getLogger(GramEvalStaticModel.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    @Override
-    public void evaluate(Solution<Variable<Integer>> solution) {
-        LOGGER.severe("The solutions should be already evaluated. You should not see this message.");
     }
 
     @Override
@@ -172,7 +135,7 @@ public class GramEvalStaticModel extends AbstractProblemGE {
     public GramEvalStaticModel clone() {
         GramEvalStaticModel clone = null;
         try {
-            clone = new GramEvalStaticModel(properties, threadId + 1);
+            clone = new GramEvalStaticModel(bnfFilePath, dataTable.getPath(), compiler.getWorkDir(), compiler.getClassPathSeparator(), threadId + 1);
         } catch (IOException ex) {
             Logger.getLogger(GramEvalStaticModel.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -180,18 +143,10 @@ public class GramEvalStaticModel extends AbstractProblemGE {
     }
 
     public static void main(String[] args) {
-        String propertiesFilePath = "test" + File.separator + GramEvalStaticModel.class.getSimpleName() + ".properties";
-        int threadId = 1;
-        if (args.length == 1) {
-            propertiesFilePath = args[0];
-        } else if (args.length >= 2) {
-            propertiesFilePath = args[0];
-            threadId = Integer.valueOf(args[1]);
-        }
-        Properties properties = new Properties();
+        int numIndividuals = 100;
+        int numGenerations = 10000;
         try {
-            properties.load(new BufferedReader(new FileReader(new File(propertiesFilePath))));
-            File clsDir = new File(properties.getProperty("WorkDir"));
+            File clsDir = new File("dist");
             URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
             Class<URLClassLoader> sysclass = URLClassLoader.class;
             Method method = sysclass.getDeclaredMethod("addURL", new Class[]{URL.class});
@@ -200,11 +155,15 @@ public class GramEvalStaticModel extends AbstractProblemGE {
         } catch (Exception ex) {
             LOGGER.severe(ex.getLocalizedMessage());
         }
-        HeroLogger.setup(properties.getProperty("LoggerBasePath") + "_" + threadId + ".log", Level.parse(properties.getProperty("LoggerLevel")));
+        HeroLogger.setup(Level.INFO);
 
         GramEvalStaticModel problem = null;
         try {
-            problem = new GramEvalStaticModel(properties, threadId);
+            String bnfFilePath = "test" + File.separator + GramEvalStaticModel.class.getSimpleName() + ".bnf";
+            String dataPath = "test" + File.separator + GramEvalStaticModel.class.getSimpleName() + ".csv";
+            String compilationDir = "dist";
+            String classPathSeparator = ":";
+            problem = new GramEvalStaticModel(bnfFilePath, dataPath, compilationDir, classPathSeparator);
         } catch (IOException ex) {
             Logger.getLogger(GramEvalStaticModel.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -213,14 +172,10 @@ public class GramEvalStaticModel extends AbstractProblemGE {
         SinglePointCrossover<Variable<Integer>> crossoverOperator = new SinglePointCrossover<>(problem, SinglePointCrossover.DEFAULT_FIXED_CROSSOVER_POINT, SinglePointCrossover.DEFAULT_PROBABILITY, SinglePointCrossover.AVOID_REPETITION_IN_FRONT);
         SimpleDominance<Variable<Integer>> comparator = new SimpleDominance<>();
         BinaryTournament<Variable<Integer>> selectionOp = new BinaryTournament<>(comparator);
-        SimpleGeneticAlgorithm<Variable<Integer>> algorithm = new SimpleGeneticAlgorithm<>(problem, Integer.valueOf(properties.getProperty("NumIndividuals")), Integer.valueOf(properties.getProperty("NumGenerations")), true, mutationOperator, crossoverOperator, selectionOp);
+        SimpleGeneticAlgorithm<Variable<Integer>> algorithm = new SimpleGeneticAlgorithm<>(problem, numIndividuals, numGenerations, true, mutationOperator, crossoverOperator, selectionOp);
         algorithm.initialize();
         Solutions<Variable<Integer>> solutions = algorithm.execute();
-        // Now we evaluate the solution in the validation data
-        LOGGER.info("Validation of solutions[0] with fitness " + solutions.get(0).getObjective(0));
-        problem.validate(solutions);
-        Solution<Variable<Integer>> solution = solutions.get(0);
-        double validationFitness = solution.getObjectives().get(0);
-        LOGGER.info("Validation fitness for solutions[0] = " + validationFitness);
+        LOGGER.info("Solutions[0] with fitness " + solutions.get(0).getObjective(0));
+        LOGGER.info("Solutions[0] with expression " + problem.generatePhenotype(solutions.get(0)).toString());
     }
 }

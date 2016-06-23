@@ -22,7 +22,6 @@ package hero.core.util.compiler;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Properties;
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;
@@ -43,16 +42,16 @@ public class MyCompiler {
     protected String workDir;
     protected String classPathSeparator;
 
-    public MyCompiler(Properties properties) {
+    public MyCompiler(String workDir, String classPathSeparator) {
         console = new StringBuffer();
-        workDir = properties.getProperty("WorkDir");
-        classPathSeparator = properties.getProperty("ClassPathSeparator");
+        this.workDir = workDir;
+        this.classPathSeparator = classPathSeparator;
     }
 
     public boolean compile(Collection<String> filePaths) throws Exception {
         console.delete(0, console.length());
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-        DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
+        DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
         StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, null, null);
         Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromStrings(filePaths);
         String jars = ".";
@@ -100,5 +99,9 @@ public class MyCompiler {
     
     public String getWorkDir() {
         return workDir;
+    }
+    
+    public String getClassPathSeparator() {
+        return classPathSeparator;
     }
 }

@@ -40,11 +40,11 @@ public class SimpleGeneticAlgorithm_example {
 		// First create the problem
 		Rastringin problem = new Rastringin(4);
 		// Second create the algorithm
-		PolynomialMutation<Variable<Double>> mutationOp = new PolynomialMutation<Variable<Double>>(problem);
-		SBXCrossover<Variable<Double>> crossoverOp = new SBXCrossover<Variable<Double>>(problem);
-		SimpleDominance<Variable<Double>> comparator = new SimpleDominance<Variable<Double>>();
-		BinaryTournament<Variable<Double>> selectionOp = new BinaryTournament<Variable<Double>>(comparator);
-		SimpleGeneticAlgorithm<Variable<Double>> ga = new SimpleGeneticAlgorithm<Variable<Double>>(problem, 100, 5000, true, mutationOp, crossoverOp, selectionOp);
+		PolynomialMutation<Variable<Double>> mutationOp = new PolynomialMutation<>(problem);
+		SBXCrossover<Variable<Double>> crossoverOp = new SBXCrossover<>(problem);
+		SimpleDominance<Variable<Double>> comparator = new SimpleDominance<>();
+		BinaryTournament<Variable<Double>> selectionOp = new BinaryTournament<>(comparator);
+		SimpleGeneticAlgorithm<Variable<Double>> ga = new SimpleGeneticAlgorithm<>(problem, 100, 5000, true, mutationOp, crossoverOp, selectionOp);
 		ga.initialize();
 		Solutions<Variable<Double>> solutions = ga.execute();
 		for(Solution<Variable<Double>> solution : solutions) {

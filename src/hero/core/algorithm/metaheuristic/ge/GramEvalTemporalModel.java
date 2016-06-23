@@ -53,18 +53,18 @@ public class GramEvalTemporalModel extends AbstractProblemGE {
 
     private static final Logger LOGGER = Logger.getLogger(GramEvalTemporalModel.class.getName());
 
+    protected String bnfFilePath;
     protected int threadId;
     protected MyCompiler compiler;
     protected DataTable dataTable;
-    protected Properties properties;
     protected AbstractPopEvaluator evaluator;
 
-    public GramEvalTemporalModel(Properties properties, int threadId) throws IOException {
-        super(properties.getProperty("BnfPathFile"), 1);
-        this.properties = properties;
+    public GramEvalTemporalModel(String bnfFilePath, String dataPath, String compilationDir, String classPathSeparator, int threadId) throws IOException {
+        super(bnfFilePath, 1);
+        this.bnfFilePath = bnfFilePath;
         this.threadId = threadId;
-        compiler = new MyCompiler(properties);
-        dataTable = new DataTable(this, properties.getProperty("DataPath"), Integer.valueOf(properties.getProperty("IdxBegin", "-1")), Integer.valueOf(properties.getProperty("IdxEnd", "-1")));
+        compiler = new MyCompiler(compilationDir, classPathSeparator);
+        dataTable = new DataTable(this, dataPath);
     }
 
     @Override
@@ -161,13 +161,15 @@ public class GramEvalTemporalModel extends AbstractProblemGE {
         evaluator = null;
         try {
             evaluator = (AbstractPopEvaluator) (new MyLoader(compiler.getWorkDir())).loadClass("PopEvaluator" + threadId).newInstance();
-            evaluator.setDataTable(dataTable.getTrainingTable());
+            evaluator.setDataTable(dataTable.getData());
         } catch (Exception ex) {
             LOGGER.severe(ex.getLocalizedMessage());
         }
         for (int i = 0; i < solutions.size(); ++i) {
             Solution<Variable<Integer>> solution = solutions.get(i);
-            double fitness = dataTable.evaluate(evaluator, solution, i);
+            // TODO: Continue here
+            double fitness = 0;
+            //dataTable.evaluate(evaluator, solution, i);
             if (Double.isNaN(fitness)) {
                 LOGGER.info("I have a NaN number here");
             }
@@ -189,7 +191,7 @@ public class GramEvalTemporalModel extends AbstractProblemGE {
     public GramEvalTemporalModel clone() {
         GramEvalTemporalModel clone = null;
         try {
-            clone = new GramEvalTemporalModel(properties, threadId + 1);
+            clone = new GramEvalTemporalModel(bnfFilePath, dataTable.getPath(), compiler.getWorkDir(), compiler.getClassPathSeparator(), threadId + 1);
         } catch (IOException ex) {
             LOGGER.severe(ex.getLocalizedMessage());
         }
@@ -212,35 +214,27 @@ public class GramEvalTemporalModel extends AbstractProblemGE {
         return properties;
     }
 
-    public static void runGE(Properties properties, int threadId) {
-        HeroLogger.setup(properties.getProperty("LoggerBasePath") + "_" + threadId + ".log", Level.parse(properties.getProperty("LoggerLevel")));
-
+    public static void main(String[] args) {
+        int numIndividuals = 100;
+        int numGenerations = 100;
+        HeroLogger.setup(Level.INFO);
         GramEvalTemporalModel problem = null;
         try {
-            problem = new GramEvalTemporalModel(properties, threadId);
+            String bnfFilePath = "test" + File.separator + GramEvalStaticModel.class.getSimpleName() + ".bnf";
+            String dataPath = "test" + File.separator + GramEvalStaticModel.class.getSimpleName() + ".csv";
+            String compilationDir = "dist";
+            String classPathSeparator = ":";
+            problem = new GramEvalTemporalModel(bnfFilePath, dataPath, compilationDir, classPathSeparator, 1);
         } catch (IOException ex) {
-            LOGGER.severe(ex.getLocalizedMessage());
+            Logger.getLogger(GramEvalStaticModel.class.getName()).log(Level.SEVERE, null, ex);
         }
         // Second create the algorithm
         IntegerFlipMutation<Variable<Integer>> mutationOperator = new IntegerFlipMutation<>(problem, 1.0 / problem.reader.getRules().size());
         SinglePointCrossover<Variable<Integer>> crossoverOperator = new SinglePointCrossover<>(problem, SinglePointCrossover.DEFAULT_FIXED_CROSSOVER_POINT, SinglePointCrossover.DEFAULT_PROBABILITY, SinglePointCrossover.AVOID_REPETITION_IN_FRONT);
         SimpleDominance<Variable<Integer>> comparator = new SimpleDominance<>();
         BinaryTournament<Variable<Integer>> selectionOp = new BinaryTournament<>(comparator);
-        SimpleGeneticAlgorithm<Variable<Integer>> algorithm = new SimpleGeneticAlgorithm<>(problem, Integer.valueOf(properties.getProperty("NumIndividuals")), Integer.valueOf(properties.getProperty("NumGenerations")), true, mutationOperator, crossoverOperator, selectionOp);
+        SimpleGeneticAlgorithm<Variable<Integer>> algorithm = new SimpleGeneticAlgorithm<>(problem, numIndividuals, numGenerations, true, mutationOperator, crossoverOperator, selectionOp);
         algorithm.initialize();
         algorithm.execute();
-    }
-
-    public static void main(String[] args) {
-        String propertiesFilePath = "TemporalModel.properties";
-        int threadId = 1;
-        if (args.length == 1) {
-            propertiesFilePath = args[0];
-        } else if (args.length >= 2) {
-            propertiesFilePath = args[0];
-            threadId = Integer.valueOf(args[1]);
-        }
-        Properties properties = loadProperties(propertiesFilePath);
-        runGE(properties, threadId);
     }
 }

@@ -19,6 +19,7 @@
  */
 package hero.core.operator.evaluator;
 
+import hero.core.util.DataTable;
 import java.util.ArrayList;
 
 /**
@@ -27,56 +28,55 @@ import java.util.ArrayList;
  */
 public abstract class AbstractPopPredictor {
 
-    public abstract double[] computeYP(int idx, double[][] xx);
-
-    public abstract double[][] computeNewX(int idx, double[][] xx);
+    public abstract void updatePredictor(DataTable data, int idx);
 
     public static String generateClassHeader(Integer threadId) {
         StringBuilder currentJavaFile = new StringBuilder();
         currentJavaFile.append("import java.util.ArrayList;\n\n");
-        currentJavaFile.append("public class PopPredictor").append(threadId).append(" extends algorithm.AbstractPopPredictor {\n");
+        currentJavaFile.append("public class PopPredictor").append(threadId).append(" extends hero.core.operator.evaluator.AbstractPopPredictor {\n");
         return currentJavaFile.toString();
     }
 
-    public static String generateComputeYp(ArrayList<String> phenotypes) {
+    public static String generateUpdatePredictor(ArrayList<String> phenotypes) {
         StringBuilder currentJavaFile = new StringBuilder();
-        currentJavaFile.append("\tpublic double[] computeYP(int idx, double[][] xx) {\n");
-        currentJavaFile.append("\t\tdouble[] yP = new double[xx.length];\n");
-        currentJavaFile.append("\t\tfor(int i=0; i<yP.length; ++i) {\n");
-        currentJavaFile.append("\t\t\tyP[i] = Double.NaN;\n");
-        currentJavaFile.append("\t\t}\n");
+        currentJavaFile.append("\tpublic void updatePredictor(hero.core.util.DataTable data, int idx) {\n");
         currentJavaFile.append("\t\ttry {\n"); // Try
+        
+        // SWITCH STRUCTURE
         currentJavaFile.append("\t\t\tswitch(idx) {\n"); // Switch
-
         for (int i = 0; i < phenotypes.size(); ++i) {
-            String multipleExpression = phenotypes.get(i);
-            String[] parts = multipleExpression.split(";");
-            String singleExpression = parts[0];
             currentJavaFile.append("\t\t\t\tcase ").append(i).append(":\n");
-            currentJavaFile.append("\t\t\t\t\tfor(int i=0; i<yP.length; ++i) {\n");
-            currentJavaFile.append("\t\t\t\t\t\tdouble[] x = xx[i];\n");
-            currentJavaFile.append("\t\t\t\t\t\tyP[i] = ").append(singleExpression).append(";\n");
-            currentJavaFile.append("\t\t\t\t\t\tif(!Double.isFinite(yP[i])) {\n");
-            currentJavaFile.append("\t\t\t\t\t\t\tyP[i] = Double.POSITIVE_INFINITY;\n");
+            currentJavaFile.append("\t\t\t\t\tfor(int i=0; i<data.getData().size(); ++i) {\n");
+            currentJavaFile.append("\t\t\t\t\t\tdouble[] row = data.getData().get(i);\n");
+            currentJavaFile.append("\t\t\t\t\t\trow[data.getPredictorColumn()] = predictorNum").append(i).append("(row);\n");
+            currentJavaFile.append("\t\t\t\t\t\tif(!Double.isFinite(row[data.getPredictorColumn()])) {\n");
+            currentJavaFile.append("\t\t\t\t\t\t\trow[data.getPredictorColumn()] = Double.POSITIVE_INFINITY;\n");
             currentJavaFile.append("\t\t\t\t\t\t}\n");
             currentJavaFile.append("\t\t\t\t\t}\n");
             currentJavaFile.append("\t\t\t\tbreak;\n");
         }
         currentJavaFile.append("\t\t\t\tdefault:\n");
-        currentJavaFile.append("\t\t\t\t\tyP = null;\n");
+        currentJavaFile.append("\t\t\t\t\tthrow new Exception(\"There is no case for this idx.\");\n");
         currentJavaFile.append("\t\t\t}\n"); // End switch
         currentJavaFile.append("\t\t}\n"); // End try
         currentJavaFile.append("\t\tcatch (Exception ee) {\n");
         currentJavaFile.append("\t\t\t// System.err.println(ee.getLocalizedMessage());\n");
-        currentJavaFile.append("\t\t\tyP = null;\n");
         currentJavaFile.append("\t\t}\n"); // End catch
-        currentJavaFile.append("\t\treturn yP;\n");
-        currentJavaFile.append("\t}\n");
+        currentJavaFile.append("\t}\n\n");
+        
+        // FUNCTIONS STRUCTURE
+        for (int i = 0; i < phenotypes.size(); ++i) {
+            String expression = phenotypes.get(i);
+            currentJavaFile.append("\tpublic double predictorNum").append(i).append("(double[] v) {\n");
+            currentJavaFile.append(expression);
+            currentJavaFile.append("\t}\n\n");
+        }
+        
 
         return currentJavaFile.toString();
     }
 
-    public static String generateComputeNewX(ArrayList<String> phenotypes) {
+/*    public static String generateComputeNewX(ArrayList<String> phenotypes) {
         StringBuilder currentJavaFile = new StringBuilder();
         currentJavaFile.append("\tpublic double[][] computeNewX(int idx, double[][] xx) {\n");
         currentJavaFile.append("\t\tdouble[][] xxNew = new double[xx.length][];\n");
@@ -111,7 +111,7 @@ public abstract class AbstractPopPredictor {
         currentJavaFile.append("\t}\n");
 
         return currentJavaFile.toString();
-    }
+    }*/
 
     public static String generateClassFooter() {
         StringBuilder currentJavaFile = new StringBuilder();
@@ -122,8 +122,8 @@ public abstract class AbstractPopPredictor {
     public static String generateClassCode(Integer threadId, ArrayList<String> phenotypes) {
         StringBuilder javaCode = new StringBuilder();
         javaCode.append(generateClassHeader(threadId));
-        javaCode.append(generateComputeYp(phenotypes));
-        javaCode.append(generateComputeNewX(phenotypes));
+        javaCode.append(generateUpdatePredictor(phenotypes));
+        //javaCode.append(generateComputeNewX(phenotypes));
         javaCode.append(generateClassFooter());
         return javaCode.toString();
     }

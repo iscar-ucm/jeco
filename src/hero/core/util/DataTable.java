@@ -26,14 +26,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 import hero.core.algorithm.metaheuristic.moge.AbstractProblemGE;
-import hero.core.operator.evaluator.AbstractPopEvaluator;
-import hero.core.problem.Solution;
-import hero.core.problem.Variable;
 
 /**
- * Class to manage a normalized data table. Originally, the data table is passed
- * to this class as a regular data table. After the constructor, the data table
- * is normalized in the interval [1,2].
+ * Class to manage a data table. 
  *
  * @author José Luis Risco Martín
  */
@@ -41,34 +36,24 @@ public class DataTable {
 
     private static final Logger LOGGER = Logger.getLogger(DataTable.class.getName());
 
-    protected AbstractProblemGE problem;
-    protected String dataPath = null;
-    protected ArrayList<double[]> dataTable = new ArrayList<>();
-    protected int idxBegin = -1;
-    protected int idxEnd = -1;
+    protected AbstractProblemGE problem = null;
+    protected String path = null;
+    protected ArrayList<double[]> data = new ArrayList<>();
     protected int numInputColumns = 0;
     protected int numTotalColumns = 0;
-    protected double[] xLs = null;
-    protected double[] xHs = null;
 
     protected double bestFitness = Double.POSITIVE_INFINITY;
 
-    public DataTable(AbstractProblemGE problem, String dataPath, int idxBegin, int idxEnd) throws IOException {
+    public DataTable(AbstractProblemGE problem, String dataPath) throws IOException {
         this.problem = problem;
-        this.dataPath = dataPath;
+        this.path = dataPath;
         LOGGER.info("Reading data file ...");
-        fillDataTable(dataPath, dataTable);
-        this.idxBegin = (idxBegin == -1) ? 0 : idxBegin;
-        this.idxEnd = (idxEnd == -1) ? dataTable.size() : idxEnd;
-        LOGGER.info("Evaluation interval: [" + this.idxBegin + "," + this.idxEnd + ")");
+        loadData(dataPath);
         LOGGER.info("... done.");
     }
 
-    public DataTable(AbstractProblemGE problem, String trainingPath) throws IOException {
-        this(problem, trainingPath, -1, -1);
-    }
-
-    public final void fillDataTable(String dataPath, ArrayList<double[]> dataTable) throws IOException {
+    public final void loadData(String dataPath) throws IOException {
+        data.clear();
         BufferedReader reader = new BufferedReader(new FileReader(new File(dataPath)));
         String line;
         while ((line = reader.readLine()) != null) {
@@ -84,12 +69,12 @@ public class DataTable {
             for (int j = 0; j < numInputColumns; ++j) {
                 dataLine[j] = Double.valueOf(parts[j]);
             }
-            dataTable.add(dataLine);
+            data.add(dataLine);
         }
         reader.close();
     }
 
-    public double evaluate(AbstractPopEvaluator evaluator, Solution<Variable<Integer>> solution, int idx) {
+    /*public double evaluate(AbstractPopEvaluator evaluator, Solution<Variable<Integer>> solution, int idx) {
         String functionAsString = problem.generatePhenotype(solution).toString();
         double fitness = computeFitness(evaluator, idx);
         if (fitness < bestFitness) {
@@ -106,15 +91,15 @@ public class DataTable {
             LOGGER.info("Best FIT=" + (100 * (1 - bestFitness)) + "; Expresion=" + functionAsString);
         }
         return fitness;
-    }
+    }*/
 
-    public double computeFitness(AbstractPopEvaluator evaluator, int idx) {
+    /*public double computeFitness(AbstractPopEvaluator evaluator, int idx) {
         evaluator.evaluateExpression(idx);
         ArrayList<double[]> timeTable = evaluator.getDataTable();
         return computeFitness(timeTable);
-    }
+    }*/
 
-    public final void normalize(double yL, double yH) {
+   /* public final void normalize(double yL, double yH) {
         LOGGER.info("Normalizing data in [" + yL + ", " + yH + "] ...");
         xLs = new double[numInputColumns];
         xHs = new double[numInputColumns];
@@ -173,27 +158,33 @@ public class DataTable {
         LOGGER.info(xLsAsString.toString());
         LOGGER.info(xHsAsString.toString());
         LOGGER.info("... done.");
-    }
+    }*/
 
-    public double computeFitness(ArrayList<double[]> timeTable) {
+    public double computeFIT() {
         double meanXref = 0.0;
-        for (int i = idxBegin; i < idxEnd; ++i) {
-            meanXref += timeTable.get(i)[0];
+        for (int i = 0; i < data.size(); ++i) {
+            meanXref += data.get(i)[0];
         }
-        meanXref = meanXref / (idxEnd - idxBegin);
+        meanXref = meanXref / data.size();
 
         double num = 0.0, den = 0.0;
-        double fitness = 0;
-        for (int i = idxBegin; i < idxEnd; ++i) {
-            num += Math.pow(timeTable.get(i)[0] - timeTable.get(i)[numInputColumns], 2.0);
-            den += Math.pow(timeTable.get(i)[0] - meanXref, 2.0);
+        for (int i = 0; i < data.size(); ++i) {
+            num += Math.pow(data.get(i)[0] - data.get(i)[numInputColumns], 2.0);
+            den += Math.pow(data.get(i)[0] - meanXref, 2.0);
         }
-        fitness = (Math.sqrt(num) / Math.sqrt(den));
-        return fitness;
+        double fit = (Math.sqrt(num) / Math.sqrt(den));
+        return fit;
     }
 
-    public ArrayList<double[]> getTrainingTable() {
-        return dataTable;
+    public ArrayList<double[]> getData() {
+        return data;
     }
-
+    
+    public String getPath() {
+        return path;
+    }
+    
+    public int getPredictorColumn() {
+        return numInputColumns;
+    }
 }
