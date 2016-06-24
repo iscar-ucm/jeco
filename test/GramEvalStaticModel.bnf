@@ -4,9 +4,9 @@
 
 <CompExpr> ::= (<Var><CompOp><Var>) | (<Var><CompOp><Cte>)
 
-<CompOp> ::= "<" | ">" | "<=" | ">=" 
+<CompOp> ::= "<" | ">" | "<=" | ">="
 
-<LogOp> ::= "||" | "&&"
+<LogOp> ::= "||" | &&
 
 <Var> ::= v[1] | v[2]
 

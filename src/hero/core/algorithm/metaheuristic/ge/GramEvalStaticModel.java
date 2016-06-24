@@ -144,7 +144,7 @@ public class GramEvalStaticModel extends AbstractProblemGE {
 
     public static void main(String[] args) {
         int numIndividuals = 100;
-        int numGenerations = 10000;
+        int numGenerations = 5000;
         try {
             File clsDir = new File("dist");
             URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
