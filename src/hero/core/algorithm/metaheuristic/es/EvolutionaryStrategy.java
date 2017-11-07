@@ -67,7 +67,7 @@ public class EvolutionaryStrategy<V extends Variable<?>> extends Algorithm<V> {
         this.maxGenerations = maxGenerations;
         this.mutationOperator = mutationOperator;
         this.crossoverOperator = new SinglePointCrossover<>(problem, SinglePointCrossover.DEFAULT_FIXED_CROSSOVER_POINT, SinglePointCrossover.DEFAULT_PROBABILITY, SinglePointCrossover.ALLOW_REPETITION);
-        this.selectionOperator = new BinaryTournament<>(new SimpleDominance<>());
+        this.selectionOperator = new BinaryTournament<>(new SimpleDominance<V>());
         this.stopWhenSolved = stopWhenSolved;
     }
 
