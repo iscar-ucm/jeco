@@ -159,8 +159,8 @@ public class GramEvalStaticModel extends AbstractProblemGE {
 
         GramEvalStaticModel problem = null;
         try {
-            String bnfFilePath = "test" + File.separator + GramEvalStaticModel.class.getSimpleName() + ".bnf";
-            String dataPath = "test" + File.separator + GramEvalStaticModel.class.getSimpleName() + ".csv";
+            String bnfFilePath = "lib" + File.separator + GramEvalStaticModel.class.getSimpleName() + ".bnf";
+            String dataPath = "lib" + File.separator + GramEvalStaticModel.class.getSimpleName() + ".csv";
             String compilationDir = "dist";
             String classPathSeparator = ":";
             problem = new GramEvalStaticModel(bnfFilePath, dataPath, compilationDir, classPathSeparator);

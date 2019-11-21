@@ -33,6 +33,7 @@ import hero.core.problem.Solution;
 import hero.core.problem.Solutions;
 import hero.core.problem.Variable;
 import hero.core.util.logger.HeroLogger;
+import java.io.File;
 
 public class MasterWorkerThreads<V extends Variable<?>> extends Problem<V> {
 
@@ -111,7 +112,7 @@ public class MasterWorkerThreads<V extends Variable<?>> extends Problem<V> {
         HeroLogger.setup();
         long begin = System.currentTimeMillis();
         // First create the problem
-        GrammaticalEvolution_example problem = new GrammaticalEvolution_example("test/grammar_example.bnf");
+        GrammaticalEvolution_example problem = new GrammaticalEvolution_example("lib" + File.separator + "grammar_example.bnf");
         // Second create the algorithm
         GrammaticalEvolution algorithm = new GrammaticalEvolution(problem, 100, 250);
         // Now the master/worker

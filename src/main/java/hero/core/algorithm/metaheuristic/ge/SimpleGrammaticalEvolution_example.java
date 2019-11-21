@@ -31,6 +31,7 @@ import hero.core.problem.Solution;
 import hero.core.problem.Solutions;
 import hero.core.problem.Variable;
 import hero.core.util.logger.HeroLogger;
+import java.io.File;
 
 /**
  * Example Please note that using the Script Engine is too slow. We recommend
@@ -87,7 +88,7 @@ public class SimpleGrammaticalEvolution_example extends AbstractProblemGE {
     public static void main(String[] args) {
         HeroLogger.setup();
         // First create the problem
-        SimpleGrammaticalEvolution_example problem = new SimpleGrammaticalEvolution_example("test/grammar_example.bnf");
+        SimpleGrammaticalEvolution_example problem = new SimpleGrammaticalEvolution_example("lib" + File.separator + "grammar_example.bnf");
         // Second create the algorithm
         SimpleGrammaticalEvolution algorithm = new SimpleGrammaticalEvolution(problem,100,1000,1.0 / problem.getNumberOfVariables(),SinglePointCrossover.DEFAULT_PROBABILITY);
         // Run
