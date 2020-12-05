@@ -17,7 +17,7 @@
  * Contributors:
  *  - José Luis Risco Martín
  */
-package hero.core.problems;
+package hero.core.benchmarks;
 
 import java.util.logging.Logger;
 

@@ -26,7 +26,7 @@ import hero.core.operator.mutation.PolynomialMutation;
 import hero.core.problem.Solution;
 import hero.core.problem.Solutions;
 import hero.core.problem.Variable;
-import hero.core.problems.Rastringin;
+import hero.core.benchmarks.Rastringin;
 import hero.core.util.logger.HeroLogger;
 
 public class EvolutionaryStrategy_example {
