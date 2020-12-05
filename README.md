@@ -1,3 +1,3 @@
-# HOL
+# HERO
 
-HOL (Heuristic Optimization Library) is a collection of optimization algorithms developed in JAVA.
+HERO (HEuRistic Optimization Library) is a collection of optimization algorithms developed in JAVA.
