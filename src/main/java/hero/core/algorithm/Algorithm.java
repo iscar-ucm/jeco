@@ -26,8 +26,8 @@ import hero.core.problem.Variable;
 /**
  *
  * @author José L. Risco-Martín
- * @param <V>
- *
+ * @param <V> Type of variable that must be used
+ * 
  */
 public abstract class Algorithm<V extends Variable<?>> {
 

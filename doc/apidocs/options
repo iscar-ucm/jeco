@@ -1,0 +1,20 @@
+-encoding
+'UTF-8'
+-protected
+-sourcepath
+'/Users/jlrisco/GIT/iscar-ucm.github.com/hero/src/main/java'
+-author
+-bottom
+'Copyright &#169; 2020. All rights reserved.'
+-charset
+'UTF-8'
+-d
+'/Users/jlrisco/GIT/iscar-ucm.github.com/hero/target/site/apidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'hero 1.0.0 API'
+-use
+-version
+-windowtitle
+'hero 1.0.0 API'

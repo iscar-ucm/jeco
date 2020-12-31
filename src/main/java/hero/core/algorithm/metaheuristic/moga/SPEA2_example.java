@@ -26,7 +26,7 @@ import hero.core.operator.mutation.PolynomialMutation;
 import hero.core.operator.selection.BinaryTournament;
 import hero.core.problem.Solutions;
 import hero.core.problem.Variable;
-import hero.core.problems.zdt.ZDT1;
+import hero.core.benchmarks.zdt.ZDT1;
 
 public class SPEA2_example {
 	private static final Logger logger = Logger.getLogger(SPEA2_example.class.getName());

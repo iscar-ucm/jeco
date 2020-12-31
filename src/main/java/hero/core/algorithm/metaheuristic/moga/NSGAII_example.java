@@ -26,7 +26,7 @@ import hero.core.operator.mutation.PolynomialMutation;
 import hero.core.operator.selection.BinaryTournamentNSGAII;
 import hero.core.problem.Solutions;
 import hero.core.problem.Variable;
-import hero.core.problems.dtlz.DTLZ1;
+import hero.core.benchmarks.dtlz.DTLZ1;
 import hero.core.util.logger.HeroLogger;
 
 public class NSGAII_example {

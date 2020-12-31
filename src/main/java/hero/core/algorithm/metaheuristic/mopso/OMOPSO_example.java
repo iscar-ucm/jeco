@@ -19,11 +19,11 @@
  */
 package hero.core.algorithm.metaheuristic.mopso;
 
+import hero.core.benchmarks.zdt.ZDT1;
 import java.util.logging.Logger;
 
 import hero.core.problem.Solutions;
 import hero.core.problem.Variable;
-import hero.core.problems.zdt.ZDT1;
 import hero.core.util.logger.HeroLogger;
 
 public class OMOPSO_example {
