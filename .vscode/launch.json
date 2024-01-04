@@ -6,6 +6,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "TabuSearchExample",
+            "request": "launch",
+            "mainClass": "eco.core.algorithm.metaheuristic.ts.TabuSearchExample",
+            "projectName": "eco"
+        },
+        {
+            "type": "java",
+            "name": "SimpleGeneticAlgorithm_example",
+            "request": "launch",
+            "mainClass": "eco.core.algorithm.metaheuristic.ga.SimpleGeneticAlgorithm_example",
+            "projectName": "eco"
+        },
+        {
+            "type": "java",
             "name": "Launch Current File",
             "request": "launch",
             "mainClass": "${file}",
