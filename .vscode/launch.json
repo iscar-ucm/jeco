@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "ScatterSearch",
+            "request": "launch",
+            "mainClass": "eco.core.algorithm.metaheuristic.ScatterSearch",
+            "projectName": "eco"
+        },
+        {
+            "type": "java",
             "name": "TabuSearchExample",
             "request": "launch",
             "mainClass": "eco.core.algorithm.metaheuristic.ts.TabuSearchExample",

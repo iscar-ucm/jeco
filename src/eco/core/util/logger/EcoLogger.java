@@ -29,7 +29,7 @@ import java.util.logging.Logger;
  *
  * @author José Luis Risco Martín
  */
-public class HeroLogger {
+public class EcoLogger {
 
     public static void setup(String filePath, Level level) {
         Logger logger = Logger.getLogger("");

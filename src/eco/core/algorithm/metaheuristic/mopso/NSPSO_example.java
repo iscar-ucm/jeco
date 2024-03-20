@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 import eco.core.benchmarks.zdt.ZDT1;
 import eco.core.problem.Solutions;
 import eco.core.problem.Variable;
-import eco.core.util.logger.HeroLogger;
+import eco.core.util.logger.EcoLogger;
 
 public class NSPSO_example {
 	private static final Logger logger = Logger.getLogger(NSPSO_example.class.getName());
@@ -32,7 +32,7 @@ public class NSPSO_example {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		HeroLogger.setup();
+		EcoLogger.setup();
 		// First create the problem
 		ZDT1 problem = new ZDT1(30);
 		NSPSO<Variable<Double>> algorithm = new NSPSO<Variable<Double>>(problem, 100, 250, 0.4, 2.0, 2.0);
