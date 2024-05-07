@@ -45,7 +45,7 @@ import eco.core.problem.Variable;
 import eco.core.util.DataTable;
 import eco.core.util.compiler.MyCompiler;
 import eco.core.util.compiler.MyLoader;
-import eco.core.util.logger.HeroLogger;
+import eco.core.util.logger.EcoLogger;
 
 /**
  * Class to develop "static" (non-temporal) models
@@ -156,7 +156,7 @@ public class GramEvalStaticModel extends AbstractProblemGE {
         } catch (Exception ex) {
             LOGGER.severe(ex.getLocalizedMessage());
         }
-        HeroLogger.setup(Level.INFO);
+        EcoLogger.setup(Level.INFO);
 
         GramEvalStaticModel problem = null;
         try {

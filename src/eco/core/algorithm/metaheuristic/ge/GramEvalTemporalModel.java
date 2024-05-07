@@ -48,7 +48,7 @@ import eco.core.problem.Variable;
 import eco.core.util.DataTable;
 import eco.core.util.compiler.MyCompiler;
 import eco.core.util.compiler.MyLoader;
-import eco.core.util.logger.HeroLogger;
+import eco.core.util.logger.EcoLogger;
 
 public class GramEvalTemporalModel extends AbstractProblemGE {
 
@@ -218,7 +218,7 @@ public class GramEvalTemporalModel extends AbstractProblemGE {
     public static void main(String[] args) {
         int numIndividuals = 100;
         int numGenerations = 100;
-        HeroLogger.setup(Level.INFO);
+        EcoLogger.setup(Level.INFO);
         GramEvalTemporalModel problem = null;
         try {
             String bnfFilePath = "lib" + File.separator + GramEvalStaticModel.class.getSimpleName() + ".bnf";

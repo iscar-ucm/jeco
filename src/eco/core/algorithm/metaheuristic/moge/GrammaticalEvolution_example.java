@@ -28,7 +28,7 @@ import javax.script.ScriptException;
 import eco.core.problem.Solution;
 import eco.core.problem.Solutions;
 import eco.core.problem.Variable;
-import eco.core.util.logger.HeroLogger;
+import eco.core.util.logger.EcoLogger;
 
 import java.io.File;
 
@@ -89,7 +89,7 @@ public class GrammaticalEvolution_example extends AbstractProblemGE {
     }
 
     public static void main(String[] args) {
-        HeroLogger.setup();
+        EcoLogger.setup();
         // First create the problem
         GrammaticalEvolution_example problem = new GrammaticalEvolution_example("lib" + File.separator + "grammar_example.bnf");
         // Second create the algorithm

@@ -27,7 +27,7 @@ import eco.core.problem.Solution;
 import eco.core.problem.Solutions;
 import eco.core.problem.Variable;
 import eco.core.benchmarks.Rastringin;
-import eco.core.util.logger.HeroLogger;
+import eco.core.util.logger.EcoLogger;
 
 /**
  * Test class and example of Differential Evolution use.
@@ -39,7 +39,7 @@ public class DifferentialEvolution_example {
     private static final Logger LOGGER = Logger.getLogger(DifferentialEvolution_example.class.getName());
 
     public static void main(String[] args) {
-        HeroLogger.setup(Level.INFO);
+        EcoLogger.setup(Level.INFO);
         // First create the problem
         Rastringin problem = new Rastringin(4);
         // Second create the algorithm:

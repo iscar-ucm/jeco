@@ -37,6 +37,10 @@ public class RandomGenerator {
         return lowerBound + (upperBound - lowerBound) * randomGenerator.nextDouble();
     }
 
+    public static double nextDouble(double upperBound) {
+        return upperBound * randomGenerator.nextDouble();
+    }
+
     public static int nextInt(int lowerBound, int upperBound) {
         return ((upperBound-lowerBound)<=0)? 0 : lowerBound + randomGenerator.nextInt(upperBound-lowerBound);
     }

@@ -22,6 +22,15 @@ package eco.core.operator.selection;
 import eco.core.problem.Solutions;
 import eco.core.problem.Variable;
 
+/**
+ * Abstract class for selection operators.
+ */
 public abstract class SelectionOperator<T extends Variable<?>> {
+
+    /**
+     * Execute the selection operator.
+     * @param solutions Set of solutions to select from.
+     * @return Selected solutions.
+     */
     abstract public Solutions<T> execute(Solutions<T> solutions);
 }

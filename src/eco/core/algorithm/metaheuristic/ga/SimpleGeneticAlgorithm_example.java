@@ -29,7 +29,7 @@ import eco.core.operator.selection.BinaryTournament;
 import eco.core.problem.Solution;
 import eco.core.problem.Solutions;
 import eco.core.problem.Variable;
-import eco.core.util.logger.HeroLogger;
+import eco.core.util.logger.EcoLogger;
 
 public class SimpleGeneticAlgorithm_example {
 
@@ -37,7 +37,7 @@ public class SimpleGeneticAlgorithm_example {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		HeroLogger.setup(Level.FINE);
+		EcoLogger.setup(Level.FINE);
 		// First create the problem
 		Rastringin problem = new Rastringin(4);
 		// Second create the algorithm

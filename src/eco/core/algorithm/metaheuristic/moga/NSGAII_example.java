@@ -27,7 +27,7 @@ import eco.core.operator.mutation.PolynomialMutation;
 import eco.core.operator.selection.BinaryTournamentNSGAII;
 import eco.core.problem.Solutions;
 import eco.core.problem.Variable;
-import eco.core.util.logger.HeroLogger;
+import eco.core.util.logger.EcoLogger;
 
 public class NSGAII_example {
 	private static final Logger logger = Logger.getLogger(NSGAII_example.class.getName());
@@ -35,7 +35,7 @@ public class NSGAII_example {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		HeroLogger.setup();
+		EcoLogger.setup();
 		// First create the problem
 		DTLZ1 problem = new DTLZ1(30);
 		// Second create the algorithm

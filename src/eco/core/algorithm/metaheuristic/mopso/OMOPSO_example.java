@@ -24,13 +24,13 @@ import java.util.logging.Logger;
 import eco.core.benchmarks.zdt.ZDT1;
 import eco.core.problem.Solutions;
 import eco.core.problem.Variable;
-import eco.core.util.logger.HeroLogger;
+import eco.core.util.logger.EcoLogger;
 
 public class OMOPSO_example {
 	private static final Logger logger = Logger.getLogger(OMOPSO_example.class.getName());
 
 	public static void main(String[] args) throws Exception {
-		HeroLogger.setup();
+		EcoLogger.setup();
 		// First create the problem
 		ZDT1 problem = new ZDT1();
 		OMOPSO<Variable<Double>> algorithm = new OMOPSO<Variable<Double>>(problem, 100, 250);
