@@ -1,5 +1,9 @@
 /*
-* Copyright (C) 2024 José Luis Risco Martín <jlrisco@ucm.es>
+* File: TabuSearch.java
+* Author: José Luis Risco Martín <jlrisco@ucm.es>
+* Created: 2024/05/10 (YYYY/MM/DD)
+*
+* Copyright (C) 2024
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -13,40 +17,77 @@
 *
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*
-* Contributors:
-*  - José Luis Risco Martín
 */
-
-package jeco.core.algorithms.metaheuristic.ts;
+package jeco.core.algorithms;
 
 import java.util.Collections;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import jeco.core.algorithms.Algorithm;
+import jeco.core.benchmarks.Rastringin;
 import jeco.core.operator.comparator.ObjectiveComparator;
+import jeco.core.operator.generator.DefaultNeighborGenerator;
 import jeco.core.operator.generator.NeighborGenerator;
 import jeco.core.problem.Problem;
 import jeco.core.problem.Solution;
 import jeco.core.problem.Solutions;
 import jeco.core.problem.Variable;
+import jeco.core.util.logger.JecoLogger;
 
+/**
+ * Tabu search algorithm.
+ * 
+ * @param <V> Type of the variables of the problem.
+ */
 public class TabuSearch<V extends Variable<?>> extends Algorithm<V> {
     private static final Logger LOGGER = Logger.getLogger(TabuSearch.class.getName());
 
+    /**
+     * Current solution.
+     */
     protected Solution<V> currentSolution;
+    /**
+     * Best solution found.
+     */
     protected Solution<V> bestSolution;
+    /**
+     * Maximum number of iterations.
+     */
     protected Integer maxIterations;
+    /**
+     * Size of the tabu list.
+     */
     protected Integer tabuSize;
+    /**
+     * Stop when the optimal solution is found.
+     */
     protected Boolean stopWhenSolved;
-
+    /**
+     * Current iteration.
+     */
     protected Integer currentIteration;
+    /**
+     * Tabu list.
+     */
     protected Solutions<V> tabuList = new Solutions<>();
-
+    /**
+     * Comparator for the objectives.
+     */
     protected ObjectiveComparator<V> comparator = new ObjectiveComparator<>(0);
+    /**
+     * Neighbor generator.
+     */
     protected NeighborGenerator<V> neighborGenerator;
 
-
+    /**
+     * Constructor.
+     * 
+     * @param problem Problem to solve.
+     * @param maxIterations Maximum number of iterations.
+     * @param tabuSize Size of the tabu list.
+     * @param stopWhenSolved Stop when the optimal solution is found.
+     * @param neighborGenerator Neighbor generator.
+     */
     public TabuSearch(Problem<V> problem, Integer maxIterations, Integer tabuSize, Boolean stopWhenSolved, NeighborGenerator<V> neighborGenerator) {
         super(problem);
         this.maxIterations = maxIterations;
@@ -116,4 +157,20 @@ public class TabuSearch<V extends Variable<?>> extends Algorithm<V> {
         solutions.add(bestSolution);
         return solutions;
     }
+
+    public static void main(String[] args) {
+		JecoLogger.setup(Level.FINE);
+		// First create the problem
+		Rastringin problem = new Rastringin(4);
+		// Second create the algorithm
+		NeighborGenerator<Variable<Double>> neighborGen = new DefaultNeighborGenerator<>(problem, 20);
+		TabuSearch<Variable<Double>> ts = new TabuSearch<>(problem, 1000, 100, true, neighborGen);
+		ts.initialize();
+		Solutions<Variable<Double>> solutions = ts.execute();
+		Solution<Variable<Double>> bestSolution = solutions.get(0);
+		System.out.println("Fitness = " + bestSolution.getObjectives().get(0));
+		//System.out.println("solutions.size()="+ solutions.size());
+		//System.out.println(solutions.toString());
+		//System.out.println("solutions.size()="+ solutions.size());
+	}
 }
