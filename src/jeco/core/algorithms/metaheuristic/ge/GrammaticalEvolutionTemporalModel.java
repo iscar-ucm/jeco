@@ -34,9 +34,9 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import jeco.core.algorithms.metaheuristic.ga.SimpleGeneticAlgorithm;
-import jeco.core.algorithms.metaheuristic.moge.AbstractProblemGE;
-import jeco.core.algorithms.metaheuristic.moge.Phenotype;
+import jeco.core.algorithms.SimpleGeneticAlgorithm;
+import jeco.core.algorithms.metaheuristic.moge.GrammaticalEvolutionAbstractProblem;
+import jeco.core.algorithms.metaheuristic.moge.PhenotypeGE;
 import jeco.core.operator.comparator.SimpleDominance;
 import jeco.core.operator.crossover.SinglePointCrossover;
 import jeco.core.operator.evaluator.AbstractPopEvaluator;
@@ -50,9 +50,9 @@ import jeco.core.util.compiler.MyCompiler;
 import jeco.core.util.compiler.MyLoader;
 import jeco.core.util.logger.JecoLogger;
 
-public class GramEvalTemporalModel extends AbstractProblemGE {
+public class GrammaticalEvolutionTemporalModel extends GrammaticalEvolutionAbstractProblem {
 
-    private static final Logger LOGGER = Logger.getLogger(GramEvalTemporalModel.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(GrammaticalEvolutionTemporalModel.class.getName());
 
     protected String bnfFilePath;
     protected int threadId;
@@ -60,7 +60,7 @@ public class GramEvalTemporalModel extends AbstractProblemGE {
     protected DataTable dataTable;
     protected AbstractPopEvaluator evaluator;
 
-    public GramEvalTemporalModel(String bnfFilePath, String dataPath, String compilationDir, String classPathSeparator, int threadId) throws IOException {
+    public GrammaticalEvolutionTemporalModel(String bnfFilePath, String dataPath, String compilationDir, String classPathSeparator, int threadId) throws IOException {
         super(bnfFilePath, 1);
         this.bnfFilePath = bnfFilePath;
         this.threadId = threadId;
@@ -118,7 +118,7 @@ public class GramEvalTemporalModel extends AbstractProblemGE {
         for (int i = 0; i < solutions.size(); ++i) {
             currentJavaFile.append("\t\t\t\tcase ").append(i).append(":\n");
             Solution<Variable<Integer>> solution = solutions.get(i);
-            Phenotype phenotype = generatePhenotype(solution);
+            PhenotypeGE phenotype = generatePhenotype(solution);
             if (correctSol) {
                 currentJavaFile.append("\t\t\t\t\tresult = ").append(phenotype.toString()).append(";\n");
             } else {
@@ -184,15 +184,15 @@ public class GramEvalTemporalModel extends AbstractProblemGE {
     }
 
     @Override
-    public void evaluate(Solution<Variable<Integer>> solution, Phenotype phenotype) {
+    public void evaluate(Solution<Variable<Integer>> solution, PhenotypeGE phenotype) {
         LOGGER.severe("The solutions should be already evaluated. You should not see this message.");
     }
 
     @Override
-    public GramEvalTemporalModel clone() {
-        GramEvalTemporalModel clone = null;
+    public GrammaticalEvolutionTemporalModel clone() {
+        GrammaticalEvolutionTemporalModel clone = null;
         try {
-            clone = new GramEvalTemporalModel(bnfFilePath, dataTable.getPath(), compiler.getWorkDir(), compiler.getClassPathSeparator(), threadId + 1);
+            clone = new GrammaticalEvolutionTemporalModel(bnfFilePath, dataTable.getPath(), compiler.getWorkDir(), compiler.getClassPathSeparator(), threadId + 1);
         } catch (IOException ex) {
             LOGGER.severe(ex.getLocalizedMessage());
         }
@@ -219,15 +219,15 @@ public class GramEvalTemporalModel extends AbstractProblemGE {
         int numIndividuals = 100;
         int numGenerations = 100;
         JecoLogger.setup(Level.INFO);
-        GramEvalTemporalModel problem = null;
+        GrammaticalEvolutionTemporalModel problem = null;
         try {
-            String bnfFilePath = "lib" + File.separator + GramEvalStaticModel.class.getSimpleName() + ".bnf";
-            String dataPath = "lib" + File.separator + GramEvalStaticModel.class.getSimpleName() + ".csv";
+            String bnfFilePath = "lib" + File.separator + GrammaticalEvolutionStaticModel.class.getSimpleName() + ".bnf";
+            String dataPath = "lib" + File.separator + GrammaticalEvolutionStaticModel.class.getSimpleName() + ".csv";
             String compilationDir = "dist";
             String classPathSeparator = ":";
-            problem = new GramEvalTemporalModel(bnfFilePath, dataPath, compilationDir, classPathSeparator, 1);
+            problem = new GrammaticalEvolutionTemporalModel(bnfFilePath, dataPath, compilationDir, classPathSeparator, 1);
         } catch (IOException ex) {
-            Logger.getLogger(GramEvalStaticModel.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GrammaticalEvolutionStaticModel.class.getName()).log(Level.SEVERE, null, ex);
         }
         // Second create the algorithm
         IntegerFlipMutation<Variable<Integer>> mutationOperator = new IntegerFlipMutation<>(problem, 1.0 / problem.reader.getRules().size());

@@ -21,7 +21,7 @@ package jeco.core.algorithms.metaheuristic.moge;
 
 import java.util.LinkedList;
 
-public class Phenotype extends LinkedList<String> {
+public class PhenotypeGE extends LinkedList<String> {
 
 	private static final long serialVersionUID = 1L;
 

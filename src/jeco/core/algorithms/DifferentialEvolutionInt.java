@@ -26,7 +26,6 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.logging.Logger;
 
-import jeco.core.algorithms.metaheuristic.ga.SimpleGeneticAlgorithm;
 import jeco.core.operator.comparator.SimpleDominance;
 import jeco.core.problem.Problem;
 import jeco.core.problem.Solution;

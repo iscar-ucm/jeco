@@ -28,7 +28,6 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import jeco.core.algorithms.metaheuristic.ga.SimpleGeneticAlgorithm;
 import jeco.core.benchmarks.Rastringin;
 import jeco.core.operator.comparator.SimpleDominance;
 import jeco.core.problem.Problem;

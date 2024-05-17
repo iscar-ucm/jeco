@@ -31,7 +31,7 @@ import jeco.core.util.bnf.Rule;
 import jeco.core.util.bnf.Symbol;
 import jeco.core.util.random.RandomGenerator;
 
-public abstract class AbstractProblemGE extends Problem<Variable<Integer>> {
+public abstract class GrammaticalEvolutionAbstractProblem extends Problem<Variable<Integer>> {
 
     public static final int CHROMOSOME_LENGTH_DEFAULT = 100;
     public static final int CODON_UPPER_BOUND_DEFAULT = 256;
@@ -45,7 +45,7 @@ public abstract class AbstractProblemGE extends Problem<Variable<Integer>> {
     protected int currentWrp;
     protected boolean correctSol;
 
-    public AbstractProblemGE(String pathToBnf, int numberOfObjectives, int chromosomeLength, int maxCntWrappings, int codonUpperBound) {
+    public GrammaticalEvolutionAbstractProblem(String pathToBnf, int numberOfObjectives, int chromosomeLength, int maxCntWrappings, int codonUpperBound) {
         super(chromosomeLength, numberOfObjectives);
         this.pathToBnf = pathToBnf;
         reader = new BnfReader();
@@ -57,15 +57,15 @@ public abstract class AbstractProblemGE extends Problem<Variable<Integer>> {
         }
     }
 
-    public AbstractProblemGE(String pathToBnf, int numberOfObjectives) {
+    public GrammaticalEvolutionAbstractProblem(String pathToBnf, int numberOfObjectives) {
         this(pathToBnf, numberOfObjectives, CHROMOSOME_LENGTH_DEFAULT, MAX_CNT_WRAPPINGS_DEFAULT, CODON_UPPER_BOUND_DEFAULT);
     }
 
-    public AbstractProblemGE(String pathToBnf) {
+    public GrammaticalEvolutionAbstractProblem(String pathToBnf) {
         this(pathToBnf, NUM_OF_OBJECTIVES_DEFAULT, CHROMOSOME_LENGTH_DEFAULT, MAX_CNT_WRAPPINGS_DEFAULT, CODON_UPPER_BOUND_DEFAULT);
     }
 
-    abstract public void evaluate(Solution<Variable<Integer>> solution, Phenotype phenotype);
+    abstract public void evaluate(Solution<Variable<Integer>> solution, PhenotypeGE phenotype);
 
     @Override
     public void evaluate(Solutions<Variable<Integer>> solutions) {
@@ -76,7 +76,7 @@ public abstract class AbstractProblemGE extends Problem<Variable<Integer>> {
 
     @Override
     public void evaluate(Solution<Variable<Integer>> solution) {
-        Phenotype phenotype = generatePhenotype(solution);
+        PhenotypeGE phenotype = generatePhenotype(solution);
         if (correctSol) {
             evaluate(solution, phenotype);
         } else {
@@ -86,11 +86,11 @@ public abstract class AbstractProblemGE extends Problem<Variable<Integer>> {
         }
     }
 
-    public Phenotype generatePhenotype(Solution<Variable<Integer>> solution) {
+    public PhenotypeGE generatePhenotype(Solution<Variable<Integer>> solution) {
         currentIdx = 0;
         currentWrp = 0;
         correctSol = true;
-        Phenotype phenotype = new Phenotype();
+        PhenotypeGE phenotype = new PhenotypeGE();
         Rule firstRule = reader.getRules().get(0);
         Production firstProduction = firstRule.get(solution.getVariables().get(currentIdx++).getValue() % firstRule.size());
         processProduction(firstProduction, solution, phenotype);

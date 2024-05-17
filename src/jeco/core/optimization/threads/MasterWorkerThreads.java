@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 
 import jeco.core.algorithms.Algorithm;
 import jeco.core.algorithms.metaheuristic.moge.GrammaticalEvolution;
-import jeco.core.algorithms.metaheuristic.moge.GrammaticalEvolution_example;
+import jeco.core.algorithms.metaheuristic.moge.GrammaticalEvolutionProblem;
 import jeco.core.problem.Problem;
 import jeco.core.problem.Solution;
 import jeco.core.problem.Solutions;
@@ -113,7 +113,7 @@ public class MasterWorkerThreads<V extends Variable<?>> extends Problem<V> {
         JecoLogger.setup();
         long begin = System.currentTimeMillis();
         // First create the problem
-        GrammaticalEvolution_example problem = new GrammaticalEvolution_example("lib" + File.separator + "grammar_example.bnf");
+        GrammaticalEvolutionProblem problem = new GrammaticalEvolutionProblem("lib" + File.separator + "grammar_example.bnf");
         // Second create the algorithm
         GrammaticalEvolution algorithm = new GrammaticalEvolution(problem, 100, 250);
         // Now the master/worker

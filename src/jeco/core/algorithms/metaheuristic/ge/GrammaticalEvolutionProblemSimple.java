@@ -24,8 +24,8 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
-import jeco.core.algorithms.metaheuristic.moge.AbstractProblemGE;
-import jeco.core.algorithms.metaheuristic.moge.Phenotype;
+import jeco.core.algorithms.metaheuristic.moge.GrammaticalEvolutionAbstractProblem;
+import jeco.core.algorithms.metaheuristic.moge.PhenotypeGE;
 import jeco.core.operator.crossover.SinglePointCrossover;
 import jeco.core.problem.Solution;
 import jeco.core.problem.Solutions;
@@ -41,20 +41,20 @@ import java.io.File;
  * @author José Luis Risco Martín
  *
  */
-public class SimpleGrammaticalEvolution_example extends AbstractProblemGE {
+public class GrammaticalEvolutionProblemSimple extends GrammaticalEvolutionAbstractProblem {
 
-  private static final Logger logger = Logger.getLogger(SimpleGrammaticalEvolution_example.class.getName());
+  private static final Logger logger = Logger.getLogger(GrammaticalEvolutionProblemSimple.class.getName());
   protected ScriptEngine evaluator = null;
   protected double[] func = {0, 4, 30, 120, 340, 780, 1554}; //x^4+x^3+x^2+x
 
-  public SimpleGrammaticalEvolution_example(String pathToBnf) {
+  public GrammaticalEvolutionProblemSimple(String pathToBnf) {
     super(pathToBnf, 1);
     ScriptEngineManager mgr = new ScriptEngineManager();
     evaluator = mgr.getEngineByName("JavaScript");
   }
 
   @Override
-  public void evaluate(Solution<Variable<Integer>> solution, Phenotype phenotype) {
+  public void evaluate(Solution<Variable<Integer>> solution, PhenotypeGE phenotype) {
     String originalFunction = phenotype.toString();
     double error, totError = 0;
     for (int i = 0; i < func.length; ++i) {
@@ -81,17 +81,17 @@ public class SimpleGrammaticalEvolution_example extends AbstractProblemGE {
   }
 
   @Override
-  public SimpleGrammaticalEvolution_example clone() {
-    SimpleGrammaticalEvolution_example clone = new SimpleGrammaticalEvolution_example(super.pathToBnf);
+  public GrammaticalEvolutionProblemSimple clone() {
+    GrammaticalEvolutionProblemSimple clone = new GrammaticalEvolutionProblemSimple(super.pathToBnf);
     return clone;
   }
 
     public static void main(String[] args) {
         JecoLogger.setup();
         // First create the problem
-        SimpleGrammaticalEvolution_example problem = new SimpleGrammaticalEvolution_example("lib" + File.separator + "grammar_example.bnf");
+        GrammaticalEvolutionProblemSimple problem = new GrammaticalEvolutionProblemSimple("lib" + File.separator + "grammar_example.bnf");
         // Second create the algorithm
-        SimpleGrammaticalEvolution algorithm = new SimpleGrammaticalEvolution(problem,100,1000,1.0 / problem.getNumberOfVariables(),SinglePointCrossover.DEFAULT_PROBABILITY);
+        GrammaticalEvolutionSimple algorithm = new GrammaticalEvolutionSimple(problem,100,1000,1.0 / problem.getNumberOfVariables(),SinglePointCrossover.DEFAULT_PROBABILITY);
         // Run
         algorithm.initialize();
         Solutions<Variable<Integer>> solutions = algorithm.execute();

@@ -39,20 +39,20 @@ import java.io.File;
  * @author José Luis Risco Martín
  *
  */
-public class GrammaticalEvolution_example extends AbstractProblemGE {
+public class GrammaticalEvolutionProblem extends GrammaticalEvolutionAbstractProblem {
 
-    private static final Logger logger = Logger.getLogger(GrammaticalEvolution_example.class.getName());
+    private static final Logger logger = Logger.getLogger(GrammaticalEvolutionProblem.class.getName());
 
     protected ScriptEngine evaluator = null;
     protected double[] func = {0, 4, 30, 120, 340, 780, 1554}; //x^4+x^3+x^2+x
 
-    public GrammaticalEvolution_example(String pathToBnf) {
+    public GrammaticalEvolutionProblem(String pathToBnf) {
         super(pathToBnf);
         ScriptEngineManager mgr = new ScriptEngineManager();
         evaluator = mgr.getEngineByName("JavaScript");
     }
 
-    public void evaluate(Solution<Variable<Integer>> solution, Phenotype phenotype) {
+    public void evaluate(Solution<Variable<Integer>> solution, PhenotypeGE phenotype) {
         String originalFunction = phenotype.toString();
         double error, totError = 0, maxError = Double.NEGATIVE_INFINITY;
         for (int i = 0; i < func.length; ++i) {
@@ -83,15 +83,15 @@ public class GrammaticalEvolution_example extends AbstractProblemGE {
     }
 
     @Override
-    public GrammaticalEvolution_example clone() {
-        GrammaticalEvolution_example clone = new GrammaticalEvolution_example(super.pathToBnf);
+    public GrammaticalEvolutionProblem clone() {
+        GrammaticalEvolutionProblem clone = new GrammaticalEvolutionProblem(super.pathToBnf);
         return clone;
     }
 
     public static void main(String[] args) {
         JecoLogger.setup();
         // First create the problem
-        GrammaticalEvolution_example problem = new GrammaticalEvolution_example("lib" + File.separator + "grammar_example.bnf");
+        GrammaticalEvolutionProblem problem = new GrammaticalEvolutionProblem("lib" + File.separator + "grammar_example.bnf");
         // Second create the algorithm
         GrammaticalEvolution algorithm = new GrammaticalEvolution(problem, 100, 1000);
         algorithm.initialize();

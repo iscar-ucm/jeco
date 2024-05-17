@@ -21,7 +21,7 @@
 package jeco.core.algorithms.metaheuristic.ge;
 
 import jeco.core.algorithms.Algorithm;
-import jeco.core.algorithms.metaheuristic.ga.SimpleGeneticAlgorithm;
+import jeco.core.algorithms.SimpleGeneticAlgorithm;
 import jeco.core.operator.comparator.SimpleDominance;
 import jeco.core.operator.crossover.SinglePointCrossover;
 import jeco.core.operator.mutation.IntegerFlipMutation;
@@ -35,11 +35,11 @@ import jeco.core.problem.Variable;
  *
  * @author J. M. Colmenar
  */
-public class SimpleGrammaticalEvolution extends Algorithm<Variable<Integer>> {
+public class GrammaticalEvolutionSimple extends Algorithm<Variable<Integer>> {
 
     SimpleGeneticAlgorithm<Variable<Integer>> algorithm;
 
-    public SimpleGrammaticalEvolution(Problem<Variable<Integer>> problem, int maxPopulationSize, int maxGenerations, double probMutation, double probCrossover) {
+    public GrammaticalEvolutionSimple(Problem<Variable<Integer>> problem, int maxPopulationSize, int maxGenerations, double probMutation, double probCrossover) {
         super(problem);
 
         // Algorithm operators

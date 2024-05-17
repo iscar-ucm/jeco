@@ -26,7 +26,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
-import jeco.core.algorithms.metaheuristic.moge.AbstractProblemGE;
+import jeco.core.algorithms.metaheuristic.moge.GrammaticalEvolutionAbstractProblem;
 
 /**
  * Class to manage a data table. 
@@ -37,7 +37,7 @@ public class DataTable {
 
     private static final Logger LOGGER = Logger.getLogger(DataTable.class.getName());
 
-    protected AbstractProblemGE problem = null;
+    protected GrammaticalEvolutionAbstractProblem problem = null;
     protected String path = null;
     protected ArrayList<double[]> data = new ArrayList<>();
     protected int numInputColumns = 0;
@@ -45,7 +45,7 @@ public class DataTable {
 
     protected double bestFitness = Double.POSITIVE_INFINITY;
 
-    public DataTable(AbstractProblemGE problem, String dataPath) throws IOException {
+    public DataTable(GrammaticalEvolutionAbstractProblem problem, String dataPath) throws IOException {
         this.problem = problem;
         this.path = dataPath;
         LOGGER.info("Reading data file ...");
