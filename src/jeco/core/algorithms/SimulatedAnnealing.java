@@ -1,34 +1,38 @@
 /*
- * Copyright (C) 2010-2016 José Luis Risco Martín <jlrisco@ucm.es>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * Contributors:
- *  - José Luis Risco Martín
- *  - José Manuel Colmenar Verdugo
- */
-package jeco.core.algorithms.metaheuristic.sa;
+* File: SimulatedAnnealing.java
+* Author: José Luis Risco Martín <jlrisco@ucm.es>
+* Author: José Manuel Colmenar Verdugo
+* Created: 2010/05/27 (YYYY/MM/DD)
+*
+* Copyright (C) 2010
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+package jeco.core.algorithms;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import jeco.core.algorithms.Algorithm;
+import jeco.core.benchmarks.Rastringin;
 import jeco.core.operator.comparator.SimpleDominance;
 import jeco.core.problem.Problem;
 import jeco.core.problem.Solution;
 import jeco.core.problem.Solutions;
 import jeco.core.problem.Variable;
+import jeco.core.util.logger.JecoLogger;
 import jeco.core.util.random.RandomGenerator;
 
 /**
@@ -36,28 +40,53 @@ import jeco.core.util.random.RandomGenerator;
  *
  * Works only for one objective.
  *
- * Does not require temperature to be given because it automatically adapts the
+ * It does not require temperature to be given because it automatically adapts the
  * parameters: Natural Optimization [de Vicente et al., 2000]
- *
- * @author J. M. Colmenar
- * @author José L. Risco Martín
  */
 public class SimulatedAnnealing<T extends Variable<?>> extends Algorithm<T> {
 
     private static final Logger LOGGER = Logger.getLogger(SimulatedAnnealing.class.getName());
 
     ///////////////////////////////////////////////////////////////////////////
+    /**
+     * Maximum number of iterations
+     */
     protected Integer maxIterations = 10000;
+    /**
+     * Current iteration
+     */
     protected Integer currentIteration = 0;
 
     /* Cost-related attributes */
+    /**
+     * Current minimum cost
+     */
     private Double currentMinimumCost = Double.MAX_VALUE;
+    /**
+     * Initial cost
+     */
     private Double initialCost = Double.MAX_VALUE;
+    /**
+     * Weight of the temperature
+     */
     private Double k = 1.0;
     ///////////////////////////////////////////////////////////////////////////
+    /**
+     * Target objective. If the algorithm reaches this obj, the optimization
+     * stops
+     */
     protected Double targetObj = null;
+    /**
+     * Dominance comparator
+     */
     protected SimpleDominance<T> dominance = new SimpleDominance<>();
+    /**
+     * Current solution
+     */
     private Solution<T> currentSolution;
+    /**
+     * Best solution found
+     */
     protected Solution<T> bestSolution;
 
     /**
@@ -86,6 +115,7 @@ public class SimulatedAnnealing<T extends Variable<?>> extends Algorithm<T> {
         this(problem, maxIterations, 1.0, Double.NEGATIVE_INFINITY);
     }
 
+    @Override
     public void initialize(Solutions<T> initialSolutions) {
         if (initialSolutions == null) {
             currentSolution = this.problem.newRandomSetOfSolutions(1).get(0);
@@ -168,5 +198,19 @@ public class SimulatedAnnealing<T extends Variable<?>> extends Algorithm<T> {
         newSolution.getVariable(i).setValue(variables.get(i).getValue());
         return newSolution;
     }
+
+    public static void main(String[] args) {
+        JecoLogger.setup(Level.INFO);
+        // First create the problem
+        Rastringin problem = new Rastringin(4);
+        // Second create the algorithm
+        SimulatedAnnealing<Variable<Double>> algorithm = new SimulatedAnnealing<>(problem, 100000);
+        algorithm.initialize();
+        Solutions<Variable<Double>> solutions = algorithm.execute();
+        for (Solution<Variable<Double>> solution : solutions) {
+            LOGGER.log(Level.INFO, "Fitness = " + solution.getObjectives().get(0));
+        }
+    }
+
 
 }
