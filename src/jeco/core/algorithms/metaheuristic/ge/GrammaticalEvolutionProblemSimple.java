@@ -24,9 +24,9 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
-import jeco.core.algorithms.metaheuristic.moge.GrammaticalEvolutionAbstractProblem;
-import jeco.core.algorithms.metaheuristic.moge.PhenotypeGE;
 import jeco.core.operator.crossover.SinglePointCrossover;
+import jeco.core.problem.GrammaticalEvolutionAbstractProblem;
+import jeco.core.problem.GrammaticalEvolutionPhenotype;
 import jeco.core.problem.Solution;
 import jeco.core.problem.Solutions;
 import jeco.core.problem.Variable;
@@ -54,7 +54,7 @@ public class GrammaticalEvolutionProblemSimple extends GrammaticalEvolutionAbstr
   }
 
   @Override
-  public void evaluate(Solution<Variable<Integer>> solution, PhenotypeGE phenotype) {
+  public void evaluate(Solution<Variable<Integer>> solution, GrammaticalEvolutionPhenotype phenotype) {
     String originalFunction = phenotype.toString();
     double error, totError = 0;
     for (int i = 0; i < func.length; ++i) {

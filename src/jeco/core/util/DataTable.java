@@ -26,7 +26,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
-import jeco.core.algorithms.metaheuristic.moge.GrammaticalEvolutionAbstractProblem;
+import jeco.core.problem.GrammaticalEvolutionAbstractProblem;
 
 /**
  * Class to manage a data table. 

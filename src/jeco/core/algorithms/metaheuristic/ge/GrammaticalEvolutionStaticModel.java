@@ -32,13 +32,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jeco.core.algorithms.SimpleGeneticAlgorithm;
-import jeco.core.algorithms.metaheuristic.moge.GrammaticalEvolutionAbstractProblem;
-import jeco.core.algorithms.metaheuristic.moge.PhenotypeGE;
 import jeco.core.operator.comparator.SimpleDominance;
 import jeco.core.operator.crossover.SinglePointCrossover;
 import jeco.core.operator.evaluator.AbstractPopPredictor;
 import jeco.core.operator.mutation.IntegerFlipMutation;
 import jeco.core.operator.selection.BinaryTournament;
+import jeco.core.problem.GrammaticalEvolutionAbstractProblem;
+import jeco.core.problem.GrammaticalEvolutionPhenotype;
 import jeco.core.problem.Solution;
 import jeco.core.problem.Solutions;
 import jeco.core.problem.Variable;
@@ -79,7 +79,7 @@ public class GrammaticalEvolutionStaticModel extends GrammaticalEvolutionAbstrac
         // Phenotype generation
         ArrayList<String> phenotypes = new ArrayList<>();
         for (Solution<Variable<Integer>> solution : solutions) {
-            PhenotypeGE phenotype = super.generatePhenotype(solution);
+            GrammaticalEvolutionPhenotype phenotype = super.generatePhenotype(solution);
             if (super.correctSol) {
                 phenotypes.add(phenotype.toString());
             } else {
@@ -128,7 +128,7 @@ public class GrammaticalEvolutionStaticModel extends GrammaticalEvolutionAbstrac
     }
 
     @Override
-    public void evaluate(Solution<Variable<Integer>> solution, PhenotypeGE phenotype) {
+    public void evaluate(Solution<Variable<Integer>> solution, GrammaticalEvolutionPhenotype phenotype) {
         LOGGER.severe("The solutions should be already evaluated. You should not see this message.");
     }
 

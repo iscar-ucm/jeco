@@ -35,13 +35,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jeco.core.algorithms.SimpleGeneticAlgorithm;
-import jeco.core.algorithms.metaheuristic.moge.GrammaticalEvolutionAbstractProblem;
-import jeco.core.algorithms.metaheuristic.moge.PhenotypeGE;
 import jeco.core.operator.comparator.SimpleDominance;
 import jeco.core.operator.crossover.SinglePointCrossover;
 import jeco.core.operator.evaluator.AbstractPopEvaluator;
 import jeco.core.operator.mutation.IntegerFlipMutation;
 import jeco.core.operator.selection.BinaryTournament;
+import jeco.core.problem.GrammaticalEvolutionAbstractProblem;
+import jeco.core.problem.GrammaticalEvolutionPhenotype;
 import jeco.core.problem.Solution;
 import jeco.core.problem.Solutions;
 import jeco.core.problem.Variable;
@@ -118,7 +118,7 @@ public class GrammaticalEvolutionTemporalModel extends GrammaticalEvolutionAbstr
         for (int i = 0; i < solutions.size(); ++i) {
             currentJavaFile.append("\t\t\t\tcase ").append(i).append(":\n");
             Solution<Variable<Integer>> solution = solutions.get(i);
-            PhenotypeGE phenotype = generatePhenotype(solution);
+            GrammaticalEvolutionPhenotype phenotype = generatePhenotype(solution);
             if (correctSol) {
                 currentJavaFile.append("\t\t\t\t\tresult = ").append(phenotype.toString()).append(";\n");
             } else {
@@ -184,7 +184,7 @@ public class GrammaticalEvolutionTemporalModel extends GrammaticalEvolutionAbstr
     }
 
     @Override
-    public void evaluate(Solution<Variable<Integer>> solution, PhenotypeGE phenotype) {
+    public void evaluate(Solution<Variable<Integer>> solution, GrammaticalEvolutionPhenotype phenotype) {
         LOGGER.severe("The solutions should be already evaluated. You should not see this message.");
     }
 

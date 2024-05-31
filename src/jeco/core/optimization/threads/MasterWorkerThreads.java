@@ -26,8 +26,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jeco.core.algorithms.Algorithm;
-import jeco.core.algorithms.metaheuristic.moge.GrammaticalEvolution;
-import jeco.core.algorithms.metaheuristic.moge.GrammaticalEvolutionProblem;
+import jeco.core.algorithms.GrammaticalEvolution;
+import jeco.core.benchmarks.GrammaticalEvolutionProblem;
 import jeco.core.problem.Problem;
 import jeco.core.problem.Solution;
 import jeco.core.problem.Solutions;
