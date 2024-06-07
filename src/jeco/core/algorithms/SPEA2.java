@@ -1,35 +1,41 @@
 /*
- * Copyright (C) 2010-2016 José Luis Risco Martín <jlrisco@ucm.es>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * Contributors:
- *  - José Luis Risco Martín
- */
-package jeco.core.algorithms.metaheuristic.moga;
+* File: SPEA2.java
+* Author: José Luis Risco Martín <jlrisco@ucm.es>
+* Created: 2010/06/07 (YYYY/MM/DD)
+*
+* Copyright (C) 2010
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+package jeco.core.algorithms;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.logging.Logger;
 
-import jeco.core.algorithms.Algorithm;
+import jeco.core.benchmarks.zdt.ZDT1;
 import jeco.core.operator.comparator.ArrayDominance;
 import jeco.core.operator.comparator.PropertyComparator;
 import jeco.core.operator.comparator.SolutionDominance;
 import jeco.core.operator.crossover.CrossoverOperator;
+import jeco.core.operator.crossover.SBXCrossover;
 import jeco.core.operator.mutation.MutationOperator;
+import jeco.core.operator.mutation.PolynomialMutation;
+import jeco.core.operator.selection.BinaryTournament;
 import jeco.core.operator.selection.SelectionOperator;
 import jeco.core.problem.Problem;
 import jeco.core.problem.Solution;
@@ -37,31 +43,63 @@ import jeco.core.problem.Solutions;
 import jeco.core.problem.Variable;
 
 /**
- *
- *
- * Input parameters: - MAX_GENERATIONS - MAX_POPULATION_SIZE
- *
- * Operators: - CROSSOVER: Crossover operator - MUTATION: Mutation operator -
- * SELECTION: Selection operator
- *
- * @author José L. Risco-Martín
- *
+ * SPEA2 algorithm
+ * 
  */
 public class SPEA2<T extends Variable<?>> extends Algorithm<T> {
+    private static final Logger logger = Logger.getLogger(SPEA2.class.getName());
     /////////////////////////////////////////////////////////////////////////
-
+    /**
+     * Maximum number of generations
+     */
     protected int maxGenerations;
+    /**
+     * Maximum population size
+     */
     protected int maxPopulationSize;
     /////////////////////////////////////////////////////////////////////////
+    /**
+     * Dominance comparator
+     */
     protected Comparator<Solution<T>> dominance;
+    /**
+     * Current generation
+     */
     protected int currentGeneration;
+    /**
+     * Population
+     */
     protected Solutions<T> population;
+    /**
+     * External archive
+     */
     protected Solutions<T> archive;
+    /**
+     * Mutation operator
+     */
     protected MutationOperator<T> mutationOperator;
+    /**
+     * Crossover operator
+     */
     protected CrossoverOperator<T> crossoverOperator;
+    /**
+     * Selection operator
+     */
     protected SelectionOperator<T> selectionOperator;
+    /**
+     * K/sigma value
+     */
     protected int K;
 
+    /**
+     * Constructor
+     * @param problem Problem to solve
+     * @param maxPopulationSize Maximum population size
+     * @param maxGenerations Maximum number of generations
+     * @param mutationOperator Mutation operator
+     * @param crossoverOperator Crossover operator
+     * @param selectionOperator Selection operator
+     */
     public SPEA2(Problem<T> problem, int maxPopulationSize, int maxGenerations, MutationOperator<T> mutationOperator, CrossoverOperator<T> crossoverOperator, SelectionOperator<T> selectionOperator) {
         super(problem);
         this.maxPopulationSize = maxPopulationSize;
@@ -95,6 +133,7 @@ public class SPEA2<T extends Variable<?>> extends Algorithm<T> {
         return archive;
     } // execute
 
+    @Override
     public void step() {
         currentGeneration++;
 
@@ -134,6 +173,10 @@ public class SPEA2<T extends Variable<?>> extends Algorithm<T> {
         population = offSpringSolutionSet;
     }
 
+    /**
+     * Assigns the fitness to the solutions
+     * @param solutions Solutions to assign the fitness
+     */
     public void assignFitness(Solutions<T> solutions) {
         int i, j, popSize = solutions.size();
         int strength[] = new int[popSize];
@@ -187,10 +230,22 @@ public class SPEA2<T extends Variable<?>> extends Algorithm<T> {
         }
     }
 
+    /**
+     * Computes the sigma value for a solution
+     * @param i Solution index
+     * @param solutions Solutions
+     * @return Sigma value
+     */
     private double computeSigma(int i, Solutions<T> solutions) {
         return computeSigmas(i, solutions).get(K);
     }
 
+    /**
+     * Computes the euclidean distance between two solutions
+     * @param sol1 Solution 1
+     * @param sol2 Solution 2
+     * @return Euclidean distance
+     */
     public double euclideanDistance(Solution<T> sol1, Solution<T> sol2) {
         int nObjs = Math.min(sol1.getObjectives().size(), sol2.getObjectives().size());
 
@@ -201,6 +256,12 @@ public class SPEA2<T extends Variable<?>> extends Algorithm<T> {
         return Math.sqrt(sum);
     }
 
+    /**
+     * Computes the sigmas for a solution
+     * @param i Solution index
+     * @param solutions Solutions
+     * @return Sigmas
+     */
     private ArrayList<Double> computeSigmas(int i, Solutions<T> solutions) {
         int popSize = solutions.size();
         int j;
@@ -215,6 +276,11 @@ public class SPEA2<T extends Variable<?>> extends Algorithm<T> {
         return distancesToI;
     }
 
+    /**
+     * Reduces the population by fitness
+     * @param pop Population
+     * @return Reduced population
+     */
     public Solutions<T> reduceByFitness(Solutions<T> pop) {
         Solutions<T> result = new Solutions<T>();
         Solution<T> indI;
@@ -227,6 +293,12 @@ public class SPEA2<T extends Variable<?>> extends Algorithm<T> {
         return result;
     }
 
+    /**
+     * Expands the population
+     * @param pop Population
+     * @param all All solutions
+     * @param nElems Number of elements to expand
+     */
     public void expand(Solutions<T> pop, Solutions<T> all, int nElems) {
         int i = 0, count = 0, allSize = all.size();
         Solution<T> indI;
@@ -243,6 +315,12 @@ public class SPEA2<T extends Variable<?>> extends Algorithm<T> {
         }
     }
 
+    /**
+     * Reduces the population to a maximum size
+     * @param pop Population
+     * @param maxSize Maximum size
+     * @return Reduced population
+     */
     public Solutions<T> reduce(Solutions<T> pop, int maxSize) {
         int i, min;
         ArrayList<ArrayList<Double>> allSigmas = new ArrayList<ArrayList<Double>>();
@@ -280,24 +358,54 @@ public class SPEA2<T extends Variable<?>> extends Algorithm<T> {
         return result;
     }
 
+    /**
+     * Sets the mutation operator
+     * @param mutationOperator Mutation operator
+     */
     public void setMutationOperator(MutationOperator<T> mutationOperator) {
         this.mutationOperator = mutationOperator;
     }
 
+    /**
+     * Sets the crossover operator
+     * @param crossoverOperator Crossover operator
+     */
     public void setCrossoverOperator(CrossoverOperator<T> crossoverOperator) {
         this.crossoverOperator = crossoverOperator;
     }
 
+    /**
+     * Sets the selection operator
+     * @param selectionOperator Selection operator
+     */
     public void setSelectionOperator(SelectionOperator<T> selectionOperator) {
         this.selectionOperator = selectionOperator;
     }
 
+    /**
+     * Sets the maximum number of generations
+     * @param maxGenerations Maximum number of generations
+     */
     public void setMaxGenerations(int maxGenerations) {
         this.maxGenerations = maxGenerations;
     }
 
+    /**
+     * Sets the maximum population size
+     * @param maxPopulationSize Maximum population size
+     */
     public void setMaxPopulationSize(int maxPopulationSize) {
         this.maxPopulationSize = maxPopulationSize;
     }
+
+    public static void main(String[] args) {
+		// First create the problem
+		ZDT1 zdt1 = new ZDT1(30);
+		// Second create the algorithm
+		SPEA2<Variable<Double>> spea2 = new SPEA2<Variable<Double>>(zdt1, 100, 250, new PolynomialMutation<Variable<Double>>(zdt1), new SBXCrossover<Variable<Double>>(zdt1), new BinaryTournament<Variable<Double>>());
+		Solutions<Variable<Double>> solutions = spea2.execute();
+		logger.info("solutions.size()="+ solutions.size());
+		System.out.println(solutions.toString());
+	}
 } // Spea2
 

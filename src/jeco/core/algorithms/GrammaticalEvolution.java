@@ -26,7 +26,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.logging.Logger;
 
-import jeco.core.algorithms.metaheuristic.moga.NSGAII;
 import jeco.core.operator.assigner.CrowdingDistance;
 import jeco.core.operator.assigner.FrontsExtractor;
 import jeco.core.operator.comparator.ComparatorNSGAII;
