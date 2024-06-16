@@ -17,13 +17,14 @@
  * Contributors:
  *  - José Luis Risco Martín
  */
-package jeco.core.algorithms.metaheuristic.ge;
+package jeco.core.algorithms.ge_templates;
 
 import java.util.logging.Logger;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
+import jeco.core.algorithms.GrammaticalEvolutionSimple;
 import jeco.core.operator.crossover.SinglePointCrossover;
 import jeco.core.problem.GrammaticalEvolutionAbstractProblem;
 import jeco.core.problem.GrammaticalEvolutionPhenotype;
@@ -43,10 +44,24 @@ import java.io.File;
  */
 public class GrammaticalEvolutionProblemSimple extends GrammaticalEvolutionAbstractProblem {
 
+  /**
+   * Logger
+   */
   private static final Logger logger = Logger.getLogger(GrammaticalEvolutionProblemSimple.class.getName());
+  /**
+   * Evaluator
+   */
   protected ScriptEngine evaluator = null;
+  /**
+   * Function to be approximated
+   */
   protected double[] func = {0, 4, 30, 120, 340, 780, 1554}; //x^4+x^3+x^2+x
 
+  /**
+   * Constructor
+   *
+   * @param pathToBnf Path to the BNF file
+   */
   public GrammaticalEvolutionProblemSimple(String pathToBnf) {
     super(pathToBnf, 1);
     ScriptEngineManager mgr = new ScriptEngineManager();

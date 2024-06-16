@@ -18,7 +18,7 @@
  *  - José Luis Risco Martín
  *  - J. M. Colmenar
  */
-package jeco.core.algorithms.metaheuristic.ge;
+package jeco.core.algorithms.ge_templates;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -50,16 +50,47 @@ import jeco.core.util.compiler.MyCompiler;
 import jeco.core.util.compiler.MyLoader;
 import jeco.core.util.logger.JecoLogger;
 
+/**
+ * Class to develop "temporal" models
+ */
 public class GrammaticalEvolutionTemporalModel extends GrammaticalEvolutionAbstractProblem {
 
+    /**
+     * Logger
+     */
     private static final Logger LOGGER = Logger.getLogger(GrammaticalEvolutionTemporalModel.class.getName());
 
+    /**
+     * Path to the BNF file
+     */
     protected String bnfFilePath;
+    /**
+     * Thread ID
+     */
     protected int threadId;
+    /**
+     * Compiler
+     */
     protected MyCompiler compiler;
+    /**
+     * Data table
+     */
     protected DataTable dataTable;
+    /**
+     * Evaluator
+     */
     protected AbstractPopEvaluator evaluator;
 
+    /**
+     * Constructor
+     *
+     * @param bnfFilePath Path to the BNF file
+     * @param dataPath Path to the data file
+     * @param compilationDir Compilation directory
+     * @param classPathSeparator Class path separator
+     * @param threadId Thread ID
+     * @throws IOException If an error occurs
+     */
     public GrammaticalEvolutionTemporalModel(String bnfFilePath, String dataPath, String compilationDir, String classPathSeparator, int threadId) throws IOException {
         super(bnfFilePath, 1);
         this.bnfFilePath = bnfFilePath;
@@ -199,6 +230,12 @@ public class GrammaticalEvolutionTemporalModel extends GrammaticalEvolutionAbstr
         return clone;
     }
 
+    /**
+     * Load properties
+     *
+     * @param propertiesFilePath Path to the properties file
+     * @return Properties
+     */
     public static Properties loadProperties(String propertiesFilePath) {
         Properties properties = new Properties();
         try {

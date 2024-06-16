@@ -18,10 +18,8 @@
  *  - J. M. Colmenar
  *  - José Luis Risco Martín
  */
-package jeco.core.algorithms.metaheuristic.ge;
+package jeco.core.algorithms;
 
-import jeco.core.algorithms.Algorithm;
-import jeco.core.algorithms.SimpleGeneticAlgorithm;
 import jeco.core.operator.comparator.SimpleDominance;
 import jeco.core.operator.crossover.SinglePointCrossover;
 import jeco.core.operator.mutation.IntegerFlipMutation;
@@ -37,8 +35,20 @@ import jeco.core.problem.Variable;
  */
 public class GrammaticalEvolutionSimple extends Algorithm<Variable<Integer>> {
 
+    /**
+     * Genetic algorithm.
+     */
     SimpleGeneticAlgorithm<Variable<Integer>> algorithm;
 
+    /**
+     * Constructor.
+     *
+     * @param problem Problem to solve.
+     * @param maxPopulationSize Maximum population size.
+     * @param maxGenerations Maximum number of generations.
+     * @param probMutation Probability of mutation.
+     * @param probCrossover Probability of crossover.
+     */
     public GrammaticalEvolutionSimple(Problem<Variable<Integer>> problem, int maxPopulationSize, int maxGenerations, double probMutation, double probCrossover) {
         super(problem);
 

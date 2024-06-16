@@ -17,7 +17,7 @@
  * Contributors:
  *  - José Luis Risco Martín
  */
-package jeco.core.algorithms.metaheuristic.ge;
+package jeco.core.algorithms.ge_templates;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -54,15 +54,45 @@ import jeco.core.util.logger.JecoLogger;
  */
 public class GrammaticalEvolutionStaticModel extends GrammaticalEvolutionAbstractProblem {
 
+    /**
+     * Logger
+     */
     private static final Logger LOGGER = Logger.getLogger(GrammaticalEvolutionStaticModel.class.getName());
 
+    /**
+     * Path to the BNF file
+     */
     protected String bnfFilePath;
+    /**
+     * Thread ID
+     */
     protected int threadId;
+    /**
+     * Compiler
+     */
     protected MyCompiler compiler;
+    /**
+     * Data table
+     */
     protected DataTable dataTable;
+    /**
+     * Predictor
+     */
     protected AbstractPopPredictor predictor;
+    /**
+     * Best fitness
+     */
     protected double bestFitness = Double.POSITIVE_INFINITY;
 
+    /**
+     * Constructor
+     * @param bnfFilePath Path to the BNF file
+     * @param dataPath Path to the data file
+     * @param compilationDir Path to the compilation directory
+     * @param classPathSeparator Class path separator
+     * @param threadId Thread ID
+     * @throws IOException If there is an error reading the BNF file
+     */
     public GrammaticalEvolutionStaticModel(String bnfFilePath, String dataPath, String compilationDir, String classPathSeparator, int threadId) throws IOException {
         super(bnfFilePath, 1);
         this.bnfFilePath = bnfFilePath;
@@ -71,10 +101,23 @@ public class GrammaticalEvolutionStaticModel extends GrammaticalEvolutionAbstrac
         dataTable = new DataTable(this, dataPath);
     }
 
+    /**
+     * Constructor
+     * @param bnfFilePath Path to the BNF file
+     * @param dataPath Path to the data file
+     * @param compilationDir Path to the compilation directory
+     * @param classPathSeparator Class path separator
+     * @throws IOException If there is an error reading the BNF file
+     */
     public GrammaticalEvolutionStaticModel(String bnfFilePath, String dataPath, String compilationDir, String classPathSeparator) throws IOException {
         this(bnfFilePath, dataPath, compilationDir, classPathSeparator, 1);
     }
 
+    /**
+     * Generate the code and compile it
+     * @param solutions Solutions
+     * @throws Exception If there is an error generating the code or compiling it
+     */
     public void generateCodeAndCompile(Solutions<Variable<Integer>> solutions) throws Exception {
         // Phenotype generation
         ArrayList<String> phenotypes = new ArrayList<>();
