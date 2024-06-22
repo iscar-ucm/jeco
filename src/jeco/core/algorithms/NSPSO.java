@@ -17,14 +17,14 @@
  * Contributors:
  *  - José Luis Risco Martín
  */
-package jeco.core.algorithms.metaheuristic.mopso;
+package jeco.core.algorithms;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
 import java.util.logging.Logger;
 
-import jeco.core.algorithms.Algorithm;
+import jeco.core.benchmarks.zdt.ZDT1;
 import jeco.core.operator.assigner.CrowdingDistance;
 import jeco.core.operator.assigner.NicheCount;
 import jeco.core.operator.comparator.PropertyComparator;
@@ -33,6 +33,7 @@ import jeco.core.problem.Problem;
 import jeco.core.problem.Solution;
 import jeco.core.problem.Solutions;
 import jeco.core.problem.Variable;
+import jeco.core.util.logger.JecoLogger;
 import jeco.core.util.random.RandomGenerator;
 
 /**
@@ -102,23 +103,50 @@ public class NSPSO<V extends Variable<Double>> extends Algorithm<V> {
      */
     protected int t;
     /**
-     * PSOList
+     * PSOList of particles
      */
     protected Solutions<V> swarm;
+    /**
+     * External archive
+     */
     protected Solutions<V> leaders;
     /**
      * Dominance operator
      */
     private SolutionDominance<V> dominance;
+    /**
+     * Bests
+     */
     private ArrayList<Solution<V>> personalBests;
+    /**
+     * Speeds
+     */
     private double[][] speeds;
     /**
      * Dynamic parameters
      */
     protected boolean dynamicParameters = false;
+    /**
+     * Dynamic velocity
+     */
     protected boolean dynamicVelocity = false;
+    /**
+     * Delta
+     */
     private double[] delta;
 
+    /**
+     * Constructor
+     * @param problem Problem to solve
+     * @param numParticles Number of particles
+     * @param maxIterations Maximum number of iterations
+     * @param w PSO w factor
+     * @param c1 PSO c1 factor
+     * @param c2 PSO c2 factor
+     * @param chi PSO chi factor
+     * @param topPartPercentage Percentage of top particles
+     * @param sortingMethod Sorting method
+     */
     public NSPSO(Problem<V> problem, int numParticles, int maxIterations, double w, double c1, double c2, double chi, double topPartPercentage, String sortingMethod) {
         super(problem);
         this.swarmSize = numParticles;
@@ -131,18 +159,51 @@ public class NSPSO<V extends Variable<Double>> extends Algorithm<V> {
         this.sortingMethod = sortingMethod;
     }
 
+    /**
+     * Constructor
+     * @param problem Problem to solve
+     * @param numParticles Number of particles
+     * @param maxIterations Maximum number of iterations
+     * @param w PSO w factor
+     * @param c1 PSO c1 factor
+     * @param c2 PSO c2 factor
+     * @param chi PSO chi factor
+     */
     public NSPSO(Problem<V> problem, int numParticles, int maxIterations, double w, double c1, double c2, double chi) {
         this(problem, numParticles, maxIterations, w, c1, c2, chi, 0.25, "CROWDING_DISTANCE");
     }
 
+    /**
+     * Constructor
+     * @param problem Problem to solve
+     * @param numParticles Number of particles
+     * @param maxIterations Maximum number of iterations
+     * @param w PSO w factor
+     * @param c1 PSO c1 factor
+     * @param c2 PSO c2 factor
+     */
     public NSPSO(Problem<V> problem, int numParticles, int maxIterations, double w, double c1, double c2) {
         this(problem, numParticles, maxIterations, w, c1, c2, DEFAULT_CHI, 0.25, "CROWDING_DISTANCE");
     }
 
+    /**
+     * Constructor
+     * @param problem Problem to solve
+     * @param numParticles Number of particles
+     * @param maxIterations Maximum number of iterations
+     */
     public NSPSO(Problem<V> problem, int numParticles, int maxIterations) {
         this(problem, numParticles, maxIterations, DEFAULT_W, DEFAULT_C1, DEFAULT_C2);
     }
 
+    /**
+     * Constructor
+     * @param problem Problem to solve
+     * @param numParticles Number of particles
+     * @param maxIterations Maximum number of iterations
+     * @param dynamicParameters Dynamic parameters
+     * @param dynamicVelocity Dynamic velocity
+     */
     public NSPSO(Problem<V> problem, int numParticles, int maxIterations, boolean dynamicParameters, boolean dynamicVelocity) {
         this(problem, numParticles, maxIterations);
         this.dynamicParameters = dynamicParameters;
@@ -189,6 +250,7 @@ public class NSPSO<V extends Variable<Double>> extends Algorithm<V> {
         t = 0;
     }
 
+    @Override
     public Solutions<V> execute() {
         while (t < maxT) {
             step();
@@ -196,6 +258,7 @@ public class NSPSO<V extends Variable<Double>> extends Algorithm<V> {
         return leaders;
     }
 
+    @Override
     public void step() {
         t++;
         // Create the offSpring solutionSet. It will contains:
@@ -230,6 +293,9 @@ public class NSPSO<V extends Variable<Double>> extends Algorithm<V> {
         reduceExternalArchive(2 * swarmSize);
     }
 
+    /**
+     * Compute the speed of the particles
+     */
     private void computeSpeed() {
         if (leaders.size() <= 0) {
             logger.severe("External archive is zero.");
@@ -307,6 +373,9 @@ public class NSPSO<V extends Variable<Double>> extends Algorithm<V> {
 
     } // computeSpeed
 
+    /**
+     * Compute the new positions of the particles
+     */
     private void computeNewPositions() {
         for (int i = 0; i < swarmSize; i++) {
             Solution<V> particle = swarm.get(i);
@@ -325,6 +394,10 @@ public class NSPSO<V extends Variable<Double>> extends Algorithm<V> {
         }
     } // computeNewPositions
 
+    /**
+     * Reduce the external archive
+     * @param maxSize Maximum size of the external archive
+     */
     public void reduceExternalArchive(int maxSize) {
         leaders.reduceToNonDominated(dominance);
         if (leaders.size() <= maxSize) {
@@ -366,11 +439,31 @@ public class NSPSO<V extends Variable<Double>> extends Algorithm<V> {
         }
     }
 
+    /**
+     * Sets the maximum number of iterations
+     * @param maxT Maximum number of iterations
+     */
     public void setMaxT(int maxT) {
         this.maxT = maxT;
     }
 
+    /**
+     * Sets the swarm size
+     * @param swarmSize Number of particles
+     */
     public void setSwarmSize(int swarmSize) {
         this.swarmSize = swarmSize;
     }
+
+    public static void main(String[] args) {
+        JecoLogger.setup();
+        // First create the problem
+        ZDT1 problem = new ZDT1(30);
+        NSPSO<Variable<Double>> algorithm = new NSPSO<Variable<Double>>(problem, 100, 250, 0.4, 2.0, 2.0);
+        algorithm.initialize();
+        Solutions<Variable<Double>> solutions = algorithm.execute();
+        logger.info("solutions.size()=" + solutions.size());
+        System.out.println(solutions.toString());
+    }
+
 }

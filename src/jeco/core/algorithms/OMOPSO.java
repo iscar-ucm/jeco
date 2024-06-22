@@ -17,14 +17,14 @@
  * Contributors:
  *  - José Luis Risco Martín
  */
-package jeco.core.algorithms.metaheuristic.mopso;
+package jeco.core.algorithms;
 
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.logging.Logger;
 import javax.management.JMException;
 
-import jeco.core.algorithms.Algorithm;
+import jeco.core.benchmarks.zdt.ZDT1;
 import jeco.core.operator.assigner.CrowdingDistance;
 import jeco.core.operator.comparator.PropertyComparator;
 import jeco.core.operator.comparator.SolutionDominance;
@@ -34,6 +34,7 @@ import jeco.core.problem.Problem;
 import jeco.core.problem.Solution;
 import jeco.core.problem.Solutions;
 import jeco.core.problem.Variable;
+import jeco.core.util.logger.JecoLogger;
 import jeco.core.util.random.RandomGenerator;
 
 /**
@@ -48,40 +49,92 @@ public class OMOPSO<V extends Variable<Double>> extends Algorithm<V> {
 
     private static final Logger logger = Logger.getLogger(OMOPSO.class.getName());
 
+    /**
+     * Swarm size
+     */
     private int swarmSize;
+    /**
+     * Maximum number of generations
+     */
     protected int maxT;
+    /**
+     * Current number of generations
+     */
     protected int t;
+    /**
+     * Swarm
+     */
     protected Solutions<V> swarm;
+    /**
+     * Personal best
+     */
     private Solutions<V> personalBests;
+    /**
+     * Leaders
+     */
     protected Solutions<V> leaders;
     //private Solutions externalArchive;
     //private Comparator<Solution> epsilonComparator;
+    /**
+     * Stores the speed of each particle
+     */
     private double[][] speeds;
+    /**
+     * Stores a comparator for checking dominance
+     */
     private SolutionDominance<V> objectivesComparator;
+    /**
+     * Stores a comparator for checking crowding distance
+     */
     private Comparator<Solution<V>> crowdingDistanceComparator;
+    /**
+     * Stores a crowding distance assigner
+     */
     private CrowdingDistance<V> crowdingDistanceAssigner;
+    /**
+     * Mutation operator
+     */
     private UniformMutation<V> uniformMutation;
+    /**
+     * Non-uniform mutation operator
+     */
     private NonUniformMutation<V> nonUniformMutation;
     //private double eta = 0.0075;
 
     // For testing purposes
+    /**
+     * Use dynamic velocity or not
+     */
     protected boolean dynamicVelocity = false;
+    /**
+     * Delta
+     */
     private double[] delta;
 
+    /**
+     * Constructor
+     * @param problem Problem to solve
+     * @param populationSize Population size
+     * @param maxT Maximum number of generations
+     */
     public OMOPSO(Problem<V> problem, int populationSize, int maxT) {
         super(problem);
         this.swarmSize = populationSize;
         this.maxT = maxT;
     } // OMOPSO
 
+    /**
+     * Constructor
+     * @param problem Problem to solve
+     * @param populationSize Population size
+     * @param maxT Maximum number of generations
+     * @param dynamicVelocity Use dynamic velocity or not
+     */
     public OMOPSO(Problem<V> problem, int populationSize, int maxT, boolean dynamicVelocity) {
         this(problem, populationSize, maxT);
         this.dynamicVelocity = dynamicVelocity;
     }
 
-    /**
-     * Initialize all parameter of the algorithm
-     */
     @Override
     public void initialize(Solutions<V> initialSolutions) {
         if (initialSolutions == null) {
@@ -141,6 +194,9 @@ public class OMOPSO<V extends Variable<Double>> extends Algorithm<V> {
         //crowdingDistanceAssigner.execute(leaders);
     } // initialize
 
+    /**
+     * Reduce the leaders to the swarm size
+     */
     public void reduceLeaders() {
         leaders.reduceToNonDominated(objectivesComparator);
         if (leaders.size() <= swarmSize) {
@@ -251,13 +307,6 @@ public class OMOPSO<V extends Variable<Double>> extends Algorithm<V> {
         }
     } // mopsoMutation
 
-    /**
-     * Runs of the OMOPSO algorithm.
-     *
-     * @return a <code>SolutionSet</code> that is a set of non dominated
-     * solutions as a result of the algorithm execution
-     * @throws JMException
-     */
     @Override
     public Solutions<V> execute() {
         int nextPercentageReport = 10;
@@ -315,11 +364,31 @@ public class OMOPSO<V extends Variable<Double>> extends Algorithm<V> {
         //crowdingDistanceAssigner.execute(leaders);
     }
 
+    /**
+     * Set the swarm size
+     * @param swarmSize Swarm size
+     */
     public void setSwarmSize(int swarmSize) {
         this.swarmSize = swarmSize;
     }
 
+    /**
+     * Set the maximum number of generations
+     * @param maxT Maximum number of generations
+     */
     public void setMaxT(int maxT) {
         this.maxT = maxT;
     }
+
+   	public static void main(String[] args) throws Exception {
+		JecoLogger.setup();
+		// First create the problem
+		ZDT1 problem = new ZDT1();
+		OMOPSO<Variable<Double>> algorithm = new OMOPSO<Variable<Double>>(problem, 100, 250);
+		algorithm.initialize();
+		Solutions<Variable<Double>> solutions = algorithm.execute();
+		logger.info("solutions.size()="+ solutions.size());
+		System.out.println(solutions.toString());
+	}//main
+
 } // OMOPSO
