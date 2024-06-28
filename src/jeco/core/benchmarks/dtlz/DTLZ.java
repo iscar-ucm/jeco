@@ -25,12 +25,20 @@ import jeco.core.problem.Solutions;
 import jeco.core.problem.Variable;
 import jeco.core.util.random.RandomGenerator;
 
+/**
+ * Abstract class for DTLZ problems
+ */
 public abstract class DTLZ extends Problem<Variable<Double>> {
 
+	/**
+	 * Constructor
+	 * @param numberOfVariables Number of variables
+	 */
     public DTLZ(Integer numberOfVariables) {
         super(numberOfVariables, 3);
     }
 
+	@Override
   	public Solutions<Variable<Double>> newRandomSetOfSolutions(int size) {
   		Solutions<Variable<Double>> solutions = new Solutions<Variable<Double>>();
   		for (int i=0; i<size; ++i) {
@@ -44,10 +52,15 @@ public abstract class DTLZ extends Problem<Variable<Double>> {
   		return solutions;
   	}
   	
+	@Override
     public void evaluate(Solutions<Variable<Double>> solutions) {
     	for(Solution<Variable<Double>> solution : solutions)
     		this.evaluate(solution);
     }
 
+	/**
+	 * Evaluate a solution
+	 * @param solution Solution to evaluate
+	 */
     public abstract void evaluate(Solution<Variable<Double>> solution);        
 }

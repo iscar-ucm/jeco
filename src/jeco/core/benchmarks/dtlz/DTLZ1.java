@@ -24,8 +24,35 @@ import java.util.ArrayList;
 import jeco.core.problem.Solution;
 import jeco.core.problem.Variable;
 
+/**
+ * DTLZ1 problem
+ * 
+ * This class represents the DTLZ1 problem. It is a subclass of the DTLZ class.
+ * The DTLZ1 problem has the following properties:
+ * - Number of variables: 7
+ * - Number of objectives: 3
+ * - Bounds for variables: [0, 1]
+ * - Type of variables: real
+ * - Pareto front: convex
+ * - Pareto set: convex
+ * 
+ * The DTLZ1 problem is defined as follows:
+ * - Minimize f1, f2, f3
+ * - f1 = 0.5 * x1 * x2 * x3 * x4 * x5 * x6 * (1 + g)
+ * - f2 = 0.5 * x1 * x2 * x3 * x4 * (1 - x5) * x6 * (1 + g)
+ * - f3 = 0.5 * x1 * x2 * x3 * (1 - x4) * x5 * x6 * (1 + g)
+ * - g = 100 * (k + sum_{i=numberOfVariables-k+1}^{numberOfVariables} (x_i - 0.5)^2 - cos(20 * pi * (x_i - 0.5)))
+ * - k = numberOfVariables - numberOfObjectives + 1
+ * - x_i in [0, 1]
+ * - i = 1, 2, ..., numberOfVariables
+ * 
+ */
 public class DTLZ1 extends DTLZ {
 
+    /**
+     * Constructor
+     * @param numberOfVariables Number of variables
+     */
     public DTLZ1(Integer numberOfVariables) {
         super(numberOfVariables);
         for (int i = 0; i < numberOfVariables; i++) {
@@ -34,10 +61,14 @@ public class DTLZ1 extends DTLZ {
         }
     }
 
+    /**
+     * Constructor
+     */
     public DTLZ1() {
         this(7);
     }
     
+    @Override
     public void evaluate(Solution<Variable<Double>> solution) {
         ArrayList<Variable<Double>> variables = solution.getVariables();
 
@@ -73,7 +104,8 @@ public class DTLZ1 extends DTLZ {
             solution.getObjectives().set(i, f[i]);
         }
     }
-    
+
+    @Override
     public DTLZ1 clone() {
     	DTLZ1 clone = new DTLZ1(this.numberOfVariables);
     	for(int i=0; i<numberOfVariables; ++i) {

@@ -24,8 +24,35 @@ import java.util.ArrayList;
 import jeco.core.problem.Solution;
 import jeco.core.problem.Variable;
 
+/**
+ * DTLZ5 problem
+ * 
+ * This class represents the DTLZ5 problem. It is a subclass of the DTLZ class.
+ * The DTLZ5 problem has the following properties:
+ * - Number of variables: 12
+ * - Number of objectives: 3
+ * - Bounds for variables: [0, 1]
+ * - Type of variables: real
+ * - Pareto front: convex
+ * - Pareto set: convex
+ * 
+ * The DTLZ5 problem is defined as follows:
+ * - Minimize f1, f2, f3
+ * - f1 = cos(x1 * pi / 2) * cos(x2 * pi / 2) * ... * cos(xM-2 * pi / 2)
+ * - f2 = cos(x1 * pi / 2) * cos(x2 * pi / 2) * ... * sin(xM-2 * pi / 2)
+ * - f3 = cos(x1 * pi / 2) * cos(x2 * pi / 2) * ... * sin(xM-2 * pi / 2)
+ * - g = 100 * (k + sum_{i=numberOfVariables-k+1}^{numberOfVariables} (x_i - 0.5)^2 - cos(20 * pi * (x_i - 0.5)))
+ * - k = numberOfVariables - numberOfObjectives + 1
+ * - x_i in [0, 1]
+ * - i = 1, 2, ..., numberOfVariables
+ * 
+ */
 public class DTLZ5 extends DTLZ {
 
+    /**
+     * Constructor
+     * @param numberOfVariables Number of variables
+     */
     public DTLZ5(Integer numberOfVariables) {
         super(numberOfVariables);
         for (int i = 0; i < numberOfVariables; i++) {
@@ -34,10 +61,14 @@ public class DTLZ5 extends DTLZ {
         }
     } // DTLZ5
 
+    /**
+     * Constructor
+     */
     public DTLZ5() {
         this(12);
     }
 
+    @Override
     public void evaluate(Solution<Variable<Double>> solution) {
         double[] theta = new double[numberOfObjectives];
         int k = numberOfVariables - numberOfObjectives + 1; // For 3-objective test functions
@@ -67,6 +98,7 @@ public class DTLZ5 extends DTLZ {
         } // for
     }
     
+    @Override
     public DTLZ5 clone() {
     	DTLZ5 clone = new DTLZ5(this.numberOfVariables);
     	for(int i=0; i<numberOfVariables; ++i) {
