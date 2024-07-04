@@ -26,8 +26,26 @@ import jeco.core.problem.Solution;
 import jeco.core.problem.Solutions;
 import jeco.core.problem.Variable;
 
+/**
+ * ZDT2 benchmark problem
+ * 
+ * ZDT2 is a multi-objective optimization problem
+ * 
+ * f1(x) = x1
+ * f2(x) = g(x) * h(f1(x), g(x))
+ * g(x) = 1 + 9 * (sum(xj) / (n-1))
+ * h(f1, g) = 1 - (f1 / g)^2
+ * 
+ * xj in [0, 1]
+ * 
+ * Pareto optimal front: convex
+ */
 public class ZDT2 extends ZDT {
 
+    /**
+     * Constructor
+     * @param numberOfVariables Number of variables
+     */
     public ZDT2(Integer numberOfVariables) {
         super(numberOfVariables);
         for (int i = 0; i < numberOfVariables; i++) {
@@ -36,10 +54,14 @@ public class ZDT2 extends ZDT {
         }
     } // ZDT1
 
+    /**
+     * Constructor
+     */
     public ZDT2() {
         this(30);
     }
 
+    @Override
     public void evaluate(Solution<Variable<Double>> solution) {
         ArrayList<Variable<Double>> variables = solution.getVariables();
         double f1 = variables.get(0).getValue();
@@ -55,6 +77,11 @@ public class ZDT2 extends ZDT {
         solution.getObjectives().set(1, g * h);
     }
 
+    /**
+     * Compute the Pareto optimal front
+     * @param n Number of points
+     * @return Pareto optimal front
+     */
     public Solutions<Variable<Double>> computeParetoOptimalFront(int n) {
         Solutions<Variable<Double>> result = new Solutions<Variable<Double>>();
 
@@ -74,6 +101,8 @@ public class ZDT2 extends ZDT {
         result.reduceToNonDominated(new SolutionDominance<Variable<Double>>());
         return result;
     }
+
+    @Override
     public ZDT2 clone() {
     	ZDT2 clone = new ZDT2(this.numberOfVariables);
     	for(int i=0; i<numberOfVariables; ++i) {

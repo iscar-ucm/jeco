@@ -26,10 +26,28 @@ import jeco.core.problem.Solution;
 import jeco.core.problem.Solutions;
 import jeco.core.problem.Variable;
 
+/**
+ * ZDT6 benchmark problem
+ * 
+ * ZDT6 is a multi-objective optimization problem
+ * 
+ * f1(x) = 1 - exp(-4 * x1) * sin(6 * pi * x1)^6
+ * f2(x) = g(x) * h(f1(x), g(x))
+ * g(x) = sum(xj) / (n-1)
+ * h(f1, g) = 1 - (f1 / g)^2
+ * 
+ * xj in [0, 1]
+ * 
+ * Pareto optimal front: non-convex
+ */
 public class ZDT6 extends ZDT {
 
     private static final Logger logger = Logger.getLogger(ZDT6.class.getName());
 
+    /**
+     * Constructor
+     * @param numberOfVariables Number of variables
+     */
     public ZDT6(Integer numberOfVariables) {
         super(numberOfVariables);
         for (int i = 0; i < numberOfVariables; i++) {
@@ -38,10 +56,14 @@ public class ZDT6 extends ZDT {
         }
     } // ZDT1
 
+    /**
+     * Constructor
+     */
     public ZDT6() {
         this(10);
     }
 
+    @Override
     public void evaluate(Solution<Variable<Double>> solution) {
         ArrayList<Variable<Double>> variables = solution.getVariables();
         double x0 = variables.get(0).getValue();
@@ -59,11 +81,18 @@ public class ZDT6 extends ZDT {
         solution.getObjectives().set(1, g * h);
     }
 
+    /**
+     * Compute the Pareto optimal front
+     * @param n Number of points
+     * @return Pareto optimal front
+     */
     public Solutions<Variable<Double>> computeParetoOptimalFront(int n) {
         // TODO: Finish this function
         logger.severe("This function is not finished");
         return null;
     }
+
+    @Override
     public ZDT6 clone() {
     	ZDT6 clone = new ZDT6(this.numberOfVariables);
     	for(int i=0; i<numberOfVariables; ++i) {

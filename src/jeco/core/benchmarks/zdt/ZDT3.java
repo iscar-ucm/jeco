@@ -26,8 +26,26 @@ import jeco.core.problem.Solution;
 import jeco.core.problem.Solutions;
 import jeco.core.problem.Variable;
 
+/**
+ * ZDT3 benchmark problem
+ * 
+ * ZDT3 is a multi-objective optimization problem
+ * 
+ * f1(x) = x1
+ * f2(x) = g(x) * h(f1(x), g(x))
+ * g(x) = 1 + 9 * (sum(xj) / (n-1))
+ * h(f1, g) = 1 - sqrt(f1 / g) - (f1 / g) * sin(10 * pi * f1)
+ * 
+ * xj in [0, 1]
+ * 
+ * Pareto optimal front: non-convex
+ */
 public class ZDT3 extends ZDT {
 
+    /**
+     * Constructor
+     * @param numberOfVariables Number of variables
+     */
     public ZDT3(Integer numberOfVariables) {
         super(numberOfVariables);
         for (int i = 0; i < numberOfVariables; i++) {
@@ -36,10 +54,14 @@ public class ZDT3 extends ZDT {
         }
     } // ZDT1
 
+    /**
+     * Constructor
+     */
     public ZDT3() {
         this(30);
     }
 
+    @Override
     public void evaluate(Solution<Variable<Double>> solution) {
         ArrayList<Variable<Double>> variables = solution.getVariables();
         double f1 = variables.get(0).getValue();
@@ -55,6 +77,11 @@ public class ZDT3 extends ZDT {
         solution.getObjectives().set(1, g * h);
     }
 
+    /**
+     * Compute the Pareto optimal front
+     * @param n Number of points
+     * @return Pareto optimal front
+     */
     public Solutions<Variable<Double>> computeParetoOptimalFront(int n) {
         Solutions<Variable<Double>> result = new Solutions<Variable<Double>>();
 
@@ -74,6 +101,7 @@ public class ZDT3 extends ZDT {
         return result;
     }
 
+    @Override
     public ZDT3 clone() {
     	ZDT3 clone = new ZDT3(this.numberOfVariables);
     	for(int i=0; i<numberOfVariables; ++i) {

@@ -25,12 +25,23 @@ import jeco.core.problem.Solutions;
 import jeco.core.problem.Variable;
 import jeco.core.util.random.RandomGenerator;
 
+/**
+ * Abstract class for ZDT problems
+ * 
+ * ZDT problems are a family of multi-objective optimization problems.
+ */
 public abstract class ZDT extends Problem<Variable<Double>> {
 
+	/**
+	 * Constructor
+	 * 
+	 * @param numberOfVariables Number of variables
+	 */
 	public ZDT(Integer numberOfVariables) {
 		super(numberOfVariables, 2);
 	}
 
+	@Override
 	public Solutions<Variable<Double>> newRandomSetOfSolutions(int size) {
 		Solutions<Variable<Double>> solutions = new Solutions<Variable<Double>>();
 		for (int i=0; i<size; ++i) {
@@ -44,11 +55,15 @@ public abstract class ZDT extends Problem<Variable<Double>> {
 		return solutions;
 	}
 	
+	@Override
   public void evaluate(Solutions<Variable<Double>> solutions) {
   	for(Solution<Variable<Double>> solution : solutions)
   		this.evaluate(solution);
   }
 
+  /**
+   * Evaluate a single solution
+   */
   public abstract void evaluate(Solution<Variable<Double>> solution);    
 
 }
