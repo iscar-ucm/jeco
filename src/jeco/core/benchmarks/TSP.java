@@ -37,25 +37,43 @@ import jeco.core.problem.Solutions;
 import jeco.core.problem.Variable;
 
 /**
- * TSP.java
- *
- * @author José L. Risco-Martín
- * @version 1.0
- */
-/**
- * Class representing a TSP (Traveling Salesman Problem) problem.
+ * Traveling Salesman Problem.
+ * 
+ * The TSP is a classic optimization problem. The goal is to find the shortest
+ * possible route that visits each city exactly once and returns to the origin
+ * city.
+ * 
+ * The TSP is a NP-hard problem. The number of possible solutions is n! (n
+ * factorial).
+ * 
+ * The TSP is a minimization problem. The fitness of a solution is the total
+ * distance of the route.
  */
 public class TSP extends Problem<Variable<Integer>> {
 
     private static Logger logger = Logger.getLogger(TSP.class.getName());
+
+    /**
+     * The file containing the definition of the problem
+     */
     protected String xmlFilePath = null;
+    /**
+     * The number of cities
+     */
     public int numberOfCities;
+    /**
+     * The distance matrix
+     */
     public double[][] distanceMatrix;
+    /**
+     * The names of the cities
+     */
     public ArrayList<String> cityNames;
 
     /**
-     * Creates a new TSP problem instance. It accepts data files from TSPLIB
-     * @param filename The file containing the definition of the problem
+     * Constructor.
+     * 
+     * @param xmlFilePath The file containing the definition of the problem
      */
     public TSP(String xmlFilePath) {
         super(1, 1);
@@ -67,15 +85,13 @@ public class TSP extends Problem<Variable<Integer>> {
         }
     } // TSP
     
+    @Override
     public void evaluate(Solutions<Variable<Integer>> solutions) {
     	for(Solution<Variable<Integer>> solution : solutions)
     		evaluate(solution);
     }
 
-    /**
-     * Evaluates a solution
-     * @param solution The solution to evaluate
-     */
+    @Override
     public void evaluate(Solution<Variable<Integer>> solution) {
         double fitness;
 
@@ -101,6 +117,11 @@ public class TSP extends Problem<Variable<Integer>> {
         solution.getObjectives().set(0, fitness);
     } // evaluate
 
+    /**
+     * Read the problem from an XML file.
+     * @param xmlFilePath The file containing the definition of the problem
+     * @throws Exception If the file is not found or the XML is not well-formed
+     */
     public void readProblem(String xmlFilePath) throws Exception {
         /**
          * <tsp>
@@ -141,12 +162,14 @@ public class TSP extends Problem<Variable<Integer>> {
 
     } // readProblem
 
+    @Override
     public Solutions<Variable<Integer>> newRandomSetOfSolutions(int size) {
         logger.severe("Method not implemented");
         return null;
         // TODO: Finish this method.
     }
 
+    @Override
     public TSP clone() {
     	TSP clone = new TSP(this.xmlFilePath);
     	for(int i=0; i<numberOfVariables; ++i) {

@@ -27,12 +27,30 @@ import jeco.core.problem.Solutions;
 import jeco.core.problem.Variable;
 import jeco.core.util.random.RandomGenerator;
 
+/**
+ * Rastringin benchmark function.
+ * 
+ * f(x) = 10 * n + sum(x_i^2 - 10 * cos(2 * pi * x_i))
+ * 
+ * x_i in [-5.12, 5.12]
+ * 
+ * Global minimum: f(x) = 0, x_i = 0
+ * 
+ * @see http://www-optima.amp.i.kyoto-u.ac.jp/member/student/hedar/Hedar_files/TestGO_files/Page2607.htm
+ */
 public class Rastringin extends Problem<Variable<Double>> {
 
     private static final Logger logger = Logger.getLogger(Rastringin.class.getName());
 
+    /**
+     * Best value found so far.
+     */
     protected double bestValue = Double.POSITIVE_INFINITY;
 
+    /**
+     * Constructor.
+     * @param numberOfVariables Number of variables.
+     */
     public Rastringin(Integer numberOfVariables) {
         super(numberOfVariables, 1);
         for (int i = 0; i < numberOfVariables; i++) {
@@ -41,6 +59,7 @@ public class Rastringin extends Problem<Variable<Double>> {
         }
     }
 
+    @Override
     public Solutions<Variable<Double>> newRandomSetOfSolutions(int size) {
         Solutions<Variable<Double>> solutions = new Solutions<Variable<Double>>();
         for (int i = 0; i < size; ++i) {
@@ -75,6 +94,7 @@ public class Rastringin extends Problem<Variable<Double>> {
         }
     }
 
+    @Override
     public Rastringin clone() {
         Rastringin clone = new Rastringin(this.numberOfVariables);
         for (int i = 0; i < numberOfVariables; ++i) {
