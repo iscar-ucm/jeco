@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2016 José Luis Risco Martín <jlrisco@ucm.es>
+ * Copyright (C) 2010 José Luis Risco Martín <jlrisco@ucm.es>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,17 +26,47 @@ import jeco.core.problem.Solution;
 import jeco.core.problem.Solutions;
 import jeco.core.problem.Variable;
 
+/**
+ * Extracts the fronts of non-dominated solutions from a population.
+ * The fronts are stored in a list of populations.
+ * The rank of the solutions is stored in the property "rank" of the solutions.
+ * 
+ * @param <V> Type of the variables of the solutions.
+ */
 public class FrontsExtractor<V extends Variable<?>> {
 
+  /**
+   * Comparator used to compare the solutions.
+   */
   protected Comparator<Solution<V>> comparator;
+  /**
+   * Property name for the number of solutions in the population.
+   */
   public static final String propertyN = "n";
+  /**
+   * Property name for the rank of the solutions.
+   */
   public static final String propertyRank = "rank";
+  /**
+   * Property name for the index of the solutions.
+   */
   public static final String propertyIndexS = "indexS";
 
+  /**
+   * Constructor.
+   * @param comparator Comparator used to compare the solutions.
+   */
   public FrontsExtractor(Comparator<Solution<V>> comparator) {
     this.comparator = comparator;
   }
 
+  /**
+   * Extracts the fronts of non-dominated solutions from a population.
+   * The fronts are stored in a list of populations.
+   * The rank of the solutions is stored in the property "rank" of the solutions.
+   * @param arg Population of solutions.
+   * @return List of populations with the fronts of non-dominated solutions.
+   */
   public ArrayList<Solutions<V>> execute(Solutions<V> arg) {
     Solutions<V> solutions = new Solutions<V>();
     solutions.addAll(arg);

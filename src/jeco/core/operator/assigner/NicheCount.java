@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2016 José Luis Risco Martín <jlrisco@ucm.es>
+ * Copyright (C) 2010 José Luis Risco Martín <jlrisco@ucm.es>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,15 +26,42 @@ import jeco.core.problem.Solution;
 import jeco.core.problem.Solutions;
 import jeco.core.problem.Variable;
 
+/**
+ * Assigns the niche count to the solutions in the population.
+ * The niche count is calculated as the number of solutions in the population
+ * that are closer than a threshold to the solution in each objective.
+ * The niche count is stored in the property "nicheCount" of the solutions.
+ * 
+ * @param <V> Type of the variables of the solutions.
+ */
 public class NicheCount<V extends Variable<?>> {
 
+	/**
+	 * Number of objectives of the problem.
+	 */
 	protected int numberOfObjectives;
+	/**
+	 * Property name for the niche count.
+	 */
 	public static final String propertyNicheCount = "nicheCount";
 
+	/**
+	 * Constructor.
+	 * @param numberOfObjectives Number of objectives of the problem.
+	 */
 	public NicheCount(int numberOfObjectives) {
 		this.numberOfObjectives = numberOfObjectives;
 	}
 
+	/**
+	 * Assigns the niche count to the solutions in the population.
+	 * The niche count is calculated as the number of solutions in the population
+	 * that are closer than a threshold to the solution in each objective.
+	 * The niche count is stored in the property "nicheCount" of the solutions.
+	 * 
+	 * @param solutions Population of solutions.
+	 * @return The population of solutions with the niche count assigned.
+	 */
 	public Solutions<V> execute(Solutions<V> solutions) {
 
 		int size = solutions.size();
