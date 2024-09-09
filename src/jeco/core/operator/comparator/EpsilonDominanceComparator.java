@@ -1,22 +1,24 @@
 /*
- * Copyright (C) 2010-2016 José Luis Risco Martín <jlrisco@ucm.es>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * Contributors:
- *  - José Luis Risco Martín
- */
+* File: EpsilonDominanceComparator.java
+* Author: José Luis Risco Martín <jlrisco@ucm.es>
+* Created: 2010/09/09 (YYYY/MM/DD)
+*
+* Copyright (C) 2010
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 package jeco.core.operator.comparator;
 
 import java.util.ArrayList;
@@ -26,8 +28,11 @@ import jeco.core.problem.Solution;
 import jeco.core.problem.Variable;
 
 /**
- * This class implements a <code>Comparator</code> (a method for comparing
- * <code>Solution</code> objects) based on epsilon dominance.
+ * Compares two solutions according to the epsilon-dominance relation. A solution
+ * dominates another if it is better in all objectives, and it is at least
+ * epsilon better in one of them.
+ * 
+ * @param <V> Type of the variables of the solutions.
  */
 public class EpsilonDominanceComparator<V extends Variable<?>> implements Comparator<Solution<V>> {
 
