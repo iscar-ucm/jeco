@@ -1,22 +1,24 @@
 /*
- * Copyright (C) 2010-2016 José Luis Risco Martín <jlrisco@ucm.es>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * Contributors:
- *  - José Luis Risco Martín
- */
+* File: CycleCrossover.java
+* Author: José Luis Risco Martín <jlrisco@ucm.es>
+* Created: 2010/09/13 (YYYY/MM/DD)
+*
+* Copyright (C) 2010
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 package jeco.core.operator.crossover;
 
 import java.util.LinkedList;
@@ -26,19 +28,45 @@ import jeco.core.problem.Solutions;
 import jeco.core.problem.Variable;
 import jeco.core.util.random.RandomGenerator;
 
+/**
+ * Class for cycle crossover.
+ * 
+ * This class implements the cycle crossover operator. The cycle crossover operator
+ * is a genetic operator that combines two parents to generate two offsprings. The
+ * operator is based on the cycle crossover operator for permutations. The operator
+ * is applied to the variables of the solutions.
+ */
 public class CycleCrossover<V extends Variable<?>> extends CrossoverOperator<V> {
 
 	public static final double DEFAULT_PROBABILITY = 0.9;
+	/**
+	 * Probability of crossover
+	 */
 	protected double probability;
 
+	/**
+	 * Constructor
+	 */
 	public CycleCrossover() {
 		probability = DEFAULT_PROBABILITY;
 	}
 
+	/**
+	 * Constructor
+	 * 
+	 * @param probability
+	 *            Probability of crossover
+	 */
 	public CycleCrossover(double probability) {
 		this.probability = probability;
 	}
 
+	/**
+	 * Looks for the position of a variable in a solution
+	 * @param parent The solution
+	 * @param variable The variable
+	 * @return The position of the variable in the solution
+	 */
 	private Integer lookForPosition(Solution<V> parent, V variable) {
 		if (variable == null) {
 			return 0;
@@ -53,6 +81,13 @@ public class CycleCrossover<V extends Variable<?>> extends CrossoverOperator<V> 
 		return -1;
 	}
 
+	/**
+	 * Executes the operation
+	 * @param probability Probability of crossover
+	 * @param parent1 The first parent
+	 * @param parent2 The second parent
+	 * @return The offsprings
+	 */
 	public Solutions<V> doCrossover(double probability, Solution<V> parent1, Solution<V> parent2) {
 
 		Solutions<V> offSpring = new Solutions<V>();

@@ -1,22 +1,24 @@
 /*
- * Copyright (C) 2010-2016 José Luis Risco Martín <jlrisco@ucm.es>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * Contributors:
- *  - José Luis Risco Martín
- */
+* File: SBXCrossover.java
+* Author: José Luis Risco Martín <jlrisco@ucm.es>
+* Created: 2010/09/13 (YYYY/MM/DD)
+*
+* Copyright (C) 2010
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 package jeco.core.operator.crossover;
 
 import jeco.core.problem.Problem;
@@ -25,6 +27,13 @@ import jeco.core.problem.Solutions;
 import jeco.core.problem.Variable;
 import jeco.core.util.random.RandomGenerator;
 
+/**
+ * Class for simulated binary crossover.
+ * 
+ * This class implements the simulated binary crossover operator. The simulated binary
+ * crossover operator is a genetic operator that combines two parents to generate two
+ * offsprings. The operator is applied to the variables of the solutions.
+ */
 public class SBXCrossover<V extends Variable<Double>>  extends CrossoverOperator<V> {
 
     /** DEFAULT_ETA_C defines a default index crossover */
@@ -34,19 +43,39 @@ public class SBXCrossover<V extends Variable<Double>>  extends CrossoverOperator
     private static final double EPS = 1.0e-14;
     /** eta_c stores the index for crossover to use */
     protected double eta_c;
+    /** probability stores the probability of crossover */
     protected double probability;
+    /** problem stores the problem */
     protected Problem<V> problem;
 
+    /**
+     * Constructor
+     * @param problem Problem
+     * @param eta_c Index for crossover
+     * @param probability Probability of crossover
+     */
     public SBXCrossover(Problem<V> problem, double eta_c, double probability) {
         this.problem = problem;
         this.eta_c = eta_c;
         this.probability = probability;
     }  // SBXCrossover
 
+    /**
+     * Constructor
+     * @param problem Problem
+     * @param eta_c Index for crossover
+     */
     public SBXCrossover(Problem<V> problem) {
         this(problem, DEFAULT_ETA_C, DEFAULT_PROBABILITY);
     } // SBXCrossover
 
+    /**
+     * Executes the crossover operation
+     * @param probability Probability of crossover
+     * @param parent1 First parent
+     * @param parent2 Second parent
+     * @return An object containing the offsprings
+     */
     public Solutions<V> doCrossover(double probability, Solution<V> parent1, Solution<V> parent2) {
 
         Solutions<V> offSpring = new Solutions<V>();

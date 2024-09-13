@@ -1,22 +1,23 @@
 /*
- * Copyright (C) 2010-2016 José Luis Risco Martín <jlrisco@ucm.es>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * Contributors:
- *  - José Luis Risco Martín
- */
+* File: SinglePointCrossover.java
+* Author: José Luis Risco Martín <jlrisco@ucm.es>
+* Created: 2010/09/13 (YYYY/MM/DD)
+*
+* Copyright (C) 2010
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package jeco.core.operator.crossover;
 
 import jeco.core.problem.Problem;
@@ -25,6 +26,14 @@ import jeco.core.problem.Solutions;
 import jeco.core.problem.Variable;
 import jeco.core.util.random.RandomGenerator;
 
+/**
+ * Class for single point crossover.
+ * 
+ * This class implements the single point crossover operator. The crossover point
+ * is selected randomly. The operator can be configured to use a fixed crossover
+ * point or not. If not, the crossover point is selected randomly for each pair
+ * of parents.
+ */
 public class SinglePointCrossover<T extends Variable<?>> extends CrossoverOperator<T> {
 
     public static final double DEFAULT_PROBABILITY = 0.9;
@@ -33,11 +42,30 @@ public class SinglePointCrossover<T extends Variable<?>> extends CrossoverOperat
     public static final int AVOID_REPETITION_IN_SET = 1;
     public static final int AVOID_REPETITION_IN_FRONT = 2;
     
+    /**
+     * Probability of crossover
+     */
     protected double probability;
+    /**
+     * Fixed crossover point
+     */
     protected boolean fixedCrossoverPoint;
+    /**
+     * Repetition mode. It can be ALLOW_REPETITION, AVOID_REPETITION_IN_SET or AVOID_REPETITION_IN_FRONT
+     */
     protected int repetition;
+    /**
+     * Problem
+     */
     protected Problem<T> problem;
 
+    /**
+     * Constructor
+     * @param problem Problem being optimized
+     * @param fixedCrossoverPoint Fixed crossover point
+     * @param probability Probability of crossover
+     * @param repetition Repetition mode
+     */
     public SinglePointCrossover(Problem<T> problem, boolean fixedCrossoverPoint, double probability, int repetition) {
         this.problem = problem;
         this.fixedCrossoverPoint = fixedCrossoverPoint;
@@ -45,14 +73,32 @@ public class SinglePointCrossover<T extends Variable<?>> extends CrossoverOperat
         this.repetition = repetition;
     }  // SinglePointCrossover
 
+    /**
+     * Constructor
+     * @param problem Problem being optimized
+     * @param fixedCrossoverPoint Fixed crossover point
+     * @param probability Probability of crossover
+     */
     public SinglePointCrossover(Problem<T> problem, boolean fixedCrossoverPoint, double probability) {
         this(problem, fixedCrossoverPoint, probability, ALLOW_REPETITION);
     }
 
+    /**
+     * Constructor
+     * @param problem Problem being optimized
+     * @param fixedCrossoverPoint Fixed crossover point
+     */
     public SinglePointCrossover(Problem<T> problem) {
         this(problem, DEFAULT_FIXED_CROSSOVER_POINT, DEFAULT_PROBABILITY, ALLOW_REPETITION);
     } // SinglePointCrossover
 
+    /**
+     * Computes the crossover point
+     *
+     * @param sol1Length Length of chromosome 1
+     * @param sol2Length Length of chromosome 2
+     * @return Crossover point
+     */
     private int computeCrossoverPoint(int sol1Length, int sol2Length) {
         int point = 0;
         if (sol1Length < sol2Length) {
@@ -64,11 +110,10 @@ public class SinglePointCrossover<T extends Variable<?>> extends CrossoverOperat
     }
 
     /**
-     * Creates the new solution. Either with fixed crossver point or not.
+     * Makes a new solution
      *
-     * @param sol1 Chromosome 1
-     * @param sol2 Chromosome 2
-     *
+     * @param sol1 Solution 1
+     * @param sol2 Solution 2
      */
     private void makeNewSolution(Solution<T> sol1, Solution<T> sol2) {
         int sol1Length = sol1.getVariables().size();
@@ -137,6 +182,14 @@ public class SinglePointCrossover<T extends Variable<?>> extends CrossoverOperat
         }
     }
 
+    /**
+     * Executes the operation
+     *
+     * @param probability Probability of crossover
+     * @param parent1 Parent 1
+     * @param parent2 Parent 2
+     * @return Offspring
+     */
     public Solutions<T> doCrossover(double probability, Solution<T> parent1, Solution<T> parent2) {
 
         Solutions<T> offSpring = new Solutions<T>();
