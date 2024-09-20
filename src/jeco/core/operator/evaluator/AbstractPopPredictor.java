@@ -1,22 +1,24 @@
 /*
- * Copyright (C) 2010-2016 José Luis Risco Martín <jlrisco@ucm.es>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * Contributors:
- *  - José Luis Risco Martín
- */
+* File: AbstractPopPredictor.java
+* Author: José Luis Risco Martín <jlrisco@ucm.es>
+* Created: 2010/09/20 (YYYY/MM/DD)
+*
+* Copyright (C) 2010
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 package jeco.core.operator.evaluator;
 
 import java.util.ArrayList;
@@ -24,13 +26,29 @@ import java.util.ArrayList;
 import jeco.core.util.DataTable;
 
 /**
- *
- * @author José Luis Risco Martín
+ * Abstract class for population predictors.
+ * 
+ * This class defines the basic structure of a population predictor. A population
+ * predictor is an object that predicts the value of a feature for a population of solutions. The predictor
+ * is used by the genetic algorithm to predict the value of a feature for the population of solutions.
  */
 public abstract class AbstractPopPredictor {
 
+    /**
+     * Update the predictor
+     * 
+     * @param data
+     *            Data table
+     * @param idx
+     *            Index of the predictor
+     */
     public abstract void updatePredictor(DataTable data, int idx);
 
+    /**
+     * Generate the class header for the predictor
+     * @param threadId Thread id
+     * @return The class header
+     */
     public static String generateClassHeader(Integer threadId) {
         StringBuilder currentJavaFile = new StringBuilder();
         currentJavaFile.append("import java.util.ArrayList;\n\n");
@@ -38,6 +56,11 @@ public abstract class AbstractPopPredictor {
         return currentJavaFile.toString();
     }
 
+    /**
+     * Generate the update predictor method
+     * @param phenotypes Phenotypes
+     * @return The update predictor method
+     */
     public static String generateUpdatePredictor(ArrayList<String> phenotypes) {
         StringBuilder currentJavaFile = new StringBuilder();
         currentJavaFile.append("\tpublic void updatePredictor(hero.core.util.DataTable data, int idx) {\n");
@@ -114,12 +137,22 @@ public abstract class AbstractPopPredictor {
         return currentJavaFile.toString();
     }*/
 
+    /**
+     * Generate the class footer for the predictor
+     * @return The class footer
+     */
     public static String generateClassFooter() {
         StringBuilder currentJavaFile = new StringBuilder();
         currentJavaFile.append("}\n");
         return currentJavaFile.toString();
     }
 
+    /**
+     * Generate the Java code for the class
+     * @param threadId Thread id
+     * @param phenotypes Phenotypes
+     * @return The Java code for the class
+     */
     public static String generateClassCode(Integer threadId, ArrayList<String> phenotypes) {
         StringBuilder javaCode = new StringBuilder();
         javaCode.append(generateClassHeader(threadId));
