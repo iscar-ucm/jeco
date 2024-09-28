@@ -21,10 +21,11 @@ package jeco.core.operator.mutation;
 
 import jeco.core.problem.Solution;
 import jeco.core.problem.Variable;
+
 /**
- * El operador de mutación también requiere genéricos porque se accede a las variables.
- * @author jlrisco
- * @param <T>
+ * Mutation operator. It changes the value of a variable with a given probability.
+ * 
+ * @param <T> Variable type.
  */
 public abstract class MutationOperator<T extends Variable<?>> {
 	protected double probability;

@@ -26,9 +26,18 @@ import jeco.core.problem.Solution;
 import jeco.core.problem.Solutions;
 import jeco.core.problem.Variable;
 
+/**
+ * Default neighbor generator. It generates a set of random solutions.
+ * @param <V> Variable type.
+ */
 public class DefaultNeighborGenerator<V extends Variable<?>> extends NeighborGenerator<V> {
     protected Problem<V> problem;
 
+    /**
+     * Constructor
+     * @param problem The problem
+     * @param neighborsSize The number of neighbors to generate
+     */
     public DefaultNeighborGenerator(Problem<V> problem, Integer neighborsSize) {
         super(neighborsSize);
         this.problem = problem;

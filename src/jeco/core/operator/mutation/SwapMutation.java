@@ -23,16 +23,23 @@ import jeco.core.problem.Solution;
 import jeco.core.problem.Variable;
 import jeco.core.util.random.RandomGenerator;
 
-//Solutions must be numeric
+/**
+ * SwapMutation mutation operator. It swaps the values of two variables with a given probability.
+ * 
+ * @param <T> Variable type.
+ */
 public class SwapMutation<T extends Variable<?>> extends MutationOperator<T> {
 	/**
 	 * Constructor
 	 * Creates a new IntegerFlipMutation mutation operator instance
+	 * 
+	 * @param probability The probability of mutation
 	 */
 	public SwapMutation(double probability) {
 		super(probability);
 	} // IntegerFlipMutation
 
+	@Override
 	public Solution<T> execute(Solution<T> solution) {
 		if (RandomGenerator.nextDouble() < probability) {
 			int indexI = RandomGenerator.nextInt(solution.getVariables().size());

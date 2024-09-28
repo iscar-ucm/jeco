@@ -26,28 +26,47 @@ import jeco.core.problem.Solution;
 import jeco.core.problem.Variable;
 import jeco.core.util.random.RandomGenerator;
 
-//Note: Solutions must be real
+/**
+ * This class implements a non-uniform mutation operator. The NonUniformMutation
+ * operator changes the value of a variable with a given probability, but the
+ * change is not uniform. The change is random and it is based on a non-uniform
+ * distribution.
+ * 
+ * @param <T> Variable type.
+ */
 public class NonUniformMutation<T extends Variable<Double>> extends MutationOperator<T> {
 
+	/**
+	 * DEFAULT_PERTURBATION_INDEX stores the default perturbation index value
+	 */
 	public static final double DEFAULT_PERTURBATION_INDEX = 0.5;
+	/**
+	 * problem stores the problem to solve
+	 */
 	protected Problem<T> problem;
 	/**
-	 * perturbation_ stores the perturbation value used in the Non Uniform
+	 * perturbationIndex stores the perturbation value used in the Non Uniform
 	 * mutation operator
 	 */
 	private double perturbationIndex;
 	/**
-	 * maxIterations_ stores the maximun number of iterations.
+	 * maxIterations stores the maximun number of iterations.
 	 */
 	private int maxIterations;
 	/**
-	 * actualIteration_ stores the iteration in which the operator is going to be
+	 * currentIteration stores the iteration in which the operator is going to be
 	 * applied
 	 */
 	private int currentIteration;
 	/**
 	 * Constructor
 	 * Creates a new instance of the non uniform mutation
+	 * 
+	 * @param problem          The problem
+	 * @param probability      The probability of mutation
+	 * @param perturbationIndex The perturbation index
+	 * @param currentIteration The current iteration
+	 * @param maxIterations    The maximum number of iterations
 	 */
 	public NonUniformMutation(Problem<T> problem, double probability, double perturbationIndex, int currentIteration, int maxIterations) {
 		super(probability);
@@ -57,16 +76,18 @@ public class NonUniformMutation<T extends Variable<Double>> extends MutationOper
 		this.maxIterations = maxIterations;
 	} // NonUniformMutation
 
+	/**
+	 * Constructor
+	 * Creates a new instance of the non uniform mutation
+	 * 
+	 * @param problem          The problem
+	 * @param maxIterations    The maximum number of iterations
+	 */
 	public NonUniformMutation(Problem<T> problem, int maxIterations) {
 		this(problem, 1.0 / problem.getNumberOfVariables(), DEFAULT_PERTURBATION_INDEX, 0, maxIterations);
 	}
 
-	/**
-	 * Executes the operation
-	 * @param object An object containing a solution
-	 * @return An object containing the mutated solution
-	 * @throws JMException
-	 */
+	@Override
 	public Solution<T> execute(Solution<T> solution) {
 		ArrayList<T> variables = solution.getVariables();
 		for (int i = 0; i < variables.size(); ++i) {
@@ -96,13 +117,20 @@ public class NonUniformMutation<T extends Variable<Double>> extends MutationOper
 	} // execute
 
 	/**
-	 * Calculates the delta value used in NonUniform mutation operator
+	 * Calculates the delta value used in NonUniform mutation operator.
+	 * 
+	 * @param y                 The value of the variable
+	 * @param bMutationParameter The mutation parameter
 	 */
 	private double delta(double y, double bMutationParameter) {
 		double rand = RandomGenerator.nextDouble();
 		return (y * (1.0 - Math.pow(rand, Math.pow((1.0 - currentIteration / (double) maxIterations), bMutationParameter))));
 	} // delta
 
+	/**
+	 * Sets the current iteration
+	 * @param currentIteration The current iteration
+	 */
 	public void setCurrentIteration(int currentIteration) {
 		this.currentIteration = currentIteration;
 	}

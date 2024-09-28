@@ -26,6 +26,11 @@ import jeco.core.problem.Solutions;
 import jeco.core.problem.Variable;
 import jeco.core.util.random.RandomGenerator;
 
+/**
+ * Class designed to generate neighbors. It swaps two variables in the solution. Thus, it generates only one neighbor.
+ * 
+ * @param <V> Variable type.
+ */
 public class SwapNeighborGenerator<V extends Variable<?>> extends NeighborGenerator<V> {
     public SwapNeighborGenerator(Integer neighborsSize) {
         super(neighborsSize);

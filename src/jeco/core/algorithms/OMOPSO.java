@@ -22,8 +22,6 @@ package jeco.core.algorithms;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.logging.Logger;
-import javax.management.JMException;
-
 import jeco.core.benchmarks.zdt.ZDT1;
 import jeco.core.operator.assigner.CrowdingDistance;
 import jeco.core.operator.comparator.PropertyComparator;

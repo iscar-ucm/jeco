@@ -26,7 +26,12 @@ import jeco.core.problem.Solution;
 import jeco.core.problem.Variable;
 import jeco.core.util.random.RandomGenerator;
 
-//Solutions must be real
+/**
+ * UniformMutation mutation operator. It changes the value of a variable
+ * with a given probability.
+ * 
+ * @param <T> Variable type.
+ */
 public class UniformMutation<T extends Variable<Double>> extends MutationOperator<T> {
 	public static final double DEFAULT_PERTURBATION_INDEX = 0.5;
 
@@ -34,12 +39,22 @@ public class UniformMutation<T extends Variable<Double>> extends MutationOperato
 	 * Stores the value used in a uniform mutation operator
 	 */
 	protected double perturbationIndex;
+	/**
+	 * Stores the probability of mutation
+	 */
 	protected double probability;
+	/**
+	 * Stores the problem to solve
+	 */
 	protected Problem<T> problem;
 
 	/**
 	 * Constructor
 	 * Creates a new uniform mutation operator instance
+	 * 
+	 * @param problem          The problem to solve
+	 * @param probability      The probability of mutation
+	 * @param perturbationIndex The perturbation index
 	 */
 	public UniformMutation(Problem<T> problem, double probability, double perturbationIndex) {
 		super(probability);
@@ -47,10 +62,17 @@ public class UniformMutation<T extends Variable<Double>> extends MutationOperato
 		this.perturbationIndex = perturbationIndex;
 	} // UniformMutation
 
+	/**
+	 * Constructor
+	 * Creates a new uniform mutation operator instance
+	 * 
+	 * @param problem     The problem to solve
+	 */
 	public UniformMutation(Problem<T> problem) {
 		this(problem, 1.0/problem.getNumberOfVariables(), DEFAULT_PERTURBATION_INDEX);
 	}
 
+	@Override
 	public Solution<T> execute(Solution<T> solution) {
 		ArrayList<T> variables = solution.getVariables();
 		for (int i = 0; i < variables.size(); ++i) {

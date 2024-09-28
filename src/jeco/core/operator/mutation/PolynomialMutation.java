@@ -26,20 +26,35 @@ import jeco.core.problem.Solution;
 import jeco.core.problem.Variable;
 import jeco.core.util.random.RandomGenerator;
 
+/**
+ * This class implements a polynomial mutation operator. The PolynomialMutation
+ * operator changes the value of a variable with a given probability, but the
+ * change is not uniform. The change is random and it is based on a polynomial
+ * distribution.
+ * 
+ * @param <T> Variable type.
+ */
 public class PolynomialMutation<T extends Variable<Double>> extends MutationOperator<T> {
 
 	/**
 	 * DEFAULT_INDEX_MUTATION defines a default index for mutation
 	 */
 	public static final double DEFAULT_ETA_M = 20.0;
+	/**
+	 * problem stores the problem to solve
+	 */
 	protected Problem<T> problem;
 	/**
-	 * eta_c stores the index for mutation to use
+	 * eta_m stores the index for mutation to use
 	 */
 	protected double eta_m;
 	/**
 	 * Constructor.
 	 * Create a new PolynomialMutation operator with an specific index
+	 * 
+	 * @param problem     The problem to solve
+	 * @param eta_m       The index for mutation
+	 * @param probability The probability of mutation
 	 */
 	public PolynomialMutation(Problem<T> problem, double eta_m, double probability) {
 		super(probability);
@@ -50,11 +65,14 @@ public class PolynomialMutation<T extends Variable<Double>> extends MutationOper
 	/**
 	 * Constructor
 	 * Creates a new instance of the polynomial mutation operator
+	 * 
+	 * @param problem     The problem to solve
 	 */
 	public PolynomialMutation(Problem<T> problem) {
 		this(problem, DEFAULT_ETA_M, 1.0 / problem.getNumberOfVariables());
 	} // PolynomialMutation
 
+	@Override
 	public Solution<T> execute(Solution<T> solution) {
 		double rnd, delta1, delta2, mut_pow, deltaq;
 		double y, yl, yu, val, xy;
