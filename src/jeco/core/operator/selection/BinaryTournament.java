@@ -27,18 +27,34 @@ import jeco.core.problem.Solutions;
 import jeco.core.problem.Variable;
 import jeco.core.util.random.RandomGenerator;
 
+/**
+ * BinaryTournament is a selection operator that selects the best individual
+ * from a pair of individuals
+ * @param <T> Variable type
+ */
 public class BinaryTournament<T extends Variable<?>> extends SelectionOperator<T> {
 
+    /**
+     * Comparator used to compare individuals
+     */
     protected Comparator<Solution<T>> comparator;
 
+    /**
+     * Creates a new instance of BinaryTournament
+     * @param comparator Comparator
+     */
     public BinaryTournament(Comparator<Solution<T>> comparator) {
         this.comparator = comparator;
     } // BinaryTournament
 
+    /**
+     * Creates a new instance of BinaryTournament
+     */
     public BinaryTournament() {
         this(new SolutionDominance<T>());
     } // Constructor
 
+    @Override
     public Solutions<T> execute(Solutions<T> solutions) {
         Solutions<T> result = new Solutions<T>();
         Solution<T> s1, s2;

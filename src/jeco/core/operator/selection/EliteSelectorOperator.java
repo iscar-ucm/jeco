@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2016 José Luis Risco Martín <jlrisco@ucm.es>
+ * Copyright (C) 2010 José Luis Risco Martín <jlrisco@ucm.es>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,21 +27,39 @@ import jeco.core.problem.Solutions;
 import jeco.core.problem.Variable;
 
 /**
- * Class for selection of elites.
- **/
+ * EliteSelectorOperator selects the best individuals from the population.
+ * To this end, it sorts the population according to the dominance relation
+ * and selects the best individuals.
+ * 
+ * @param <T> Variable type
+ */
 public class EliteSelectorOperator<T extends Variable<?>> extends SelectionOperator<T> {
 
+    /**
+     * Default number of elite individuals
+     */
     public static final int DEFAULT_ELITE_SIZE = 10;
+    /**
+     * Number of elite individuals
+     */
     protected int eliteSize;
 
+    /**
+     * Creates a new instance of EliteSelectorOperator
+     * @param eliteSize number of elite individuals
+     */
     public EliteSelectorOperator(int eliteSize) {
         this.eliteSize = eliteSize;
     }
 
+    /**
+     * Creates a new instance of EliteSelectorOperator
+     */
     public EliteSelectorOperator() {
         this(DEFAULT_ELITE_SIZE);
     }
 
+    @Override
     public Solutions<T> execute(Solutions<T> arg) {
         Solutions<T> solutions = new Solutions<T>();
         solutions.addAll(arg);

@@ -26,20 +26,32 @@ import jeco.core.problem.Solutions;
 import jeco.core.problem.Variable;
 
 /**
- * ReplacementOperation removes replacementSize Individuals from the population
+ * ReductionOperator removes replacementSize Individuals from the population
  * @author José L. Risco-Martín
  */
 public class ReductionOperator<T extends Variable<?>> {
 
+	/**
+	 * Enumerates the different types of replacement
+	 */
 	public enum REDUCTION_TYPE {
 
 		STEADY_STATE, GENERATIONAL
 	};
+	/**
+	 * Number of individuals to remove
+	 */
 	protected int reductionSize;
+	/**
+	 * Fraction of individuals to remove
+	 */
 	protected double valueD;
+	/**
+	 * Type of replacement
+	 */
 	protected REDUCTION_TYPE reductionType;
 
-	/** Creates a new instance of ReplacementOperation
+	/** Creates a new instance of ReductionOperator
 	 * @param replacementSize size
 	 */
 	public ReductionOperator(int replacementSize) {
@@ -47,6 +59,10 @@ public class ReductionOperator<T extends Variable<?>> {
 		this.valueD = -1.0;
 	}
 
+	/** Creates a new instance of ReductionOperator
+	 * @param valueD fraction
+	 * @throws Exception if valueD is not in the range [0,1]
+	 */
 	public ReductionOperator(double valueD) throws Exception {
 		if (valueD < 0 || valueD > 1) {
 			throw new Exception("valueD must be in the range [0,1]");
@@ -55,16 +71,25 @@ public class ReductionOperator<T extends Variable<?>> {
 		this.valueD = valueD;
 	}
 
+	/** Creates a new instance of ReductionOperator
+	 * @param replacementType type
+	 */
 	public ReductionOperator(REDUCTION_TYPE replacementType) {
 		this.reductionSize = -1;
 		this.valueD = -1.0;
 		this.reductionType = replacementType;
 	}
 
+	/** Creates a new instance of ReductionOperator
+	 */
 	public ReductionOperator() {
 		this(REDUCTION_TYPE.GENERATIONAL);
 	}
 
+	/** Executes the operator
+	 * @param arg population
+	 * @return the population with the individuals removed
+	 */
 	public Solutions<T> execute(Solutions<T> arg) {
 		Solutions<T> solutions = new Solutions<T>();
 		solutions.addAll(arg);

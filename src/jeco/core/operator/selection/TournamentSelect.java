@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2016 José Luis Risco Martín <jlrisco@ucm.es>
+ * Copyright (C) 2010 José Luis Risco Martín <jlrisco@ucm.es>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,13 @@ import jeco.core.problem.Solutions;
 import jeco.core.problem.Variable;
 import jeco.core.util.random.RandomGenerator;
 
+/**
+ * TournamentSelect is a selection operator that selects the best individual
+ * from a set of individuals. To do so, first randomly selects a set of individuals
+ * and then selects the best individual from this set.
+ * 
+ * @param <T> Variable type
+ */
 public class TournamentSelect<T extends Variable<?>> extends SelectionOperator<T> {
 
     public static final int DEFAULT_TOURNAMENT_SIZE = 2;

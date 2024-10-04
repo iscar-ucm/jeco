@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2016 José Luis Risco Martín <jlrisco@ucm.es>
+ * Copyright (C) 2010 José Luis Risco Martín <jlrisco@ucm.es>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,25 +30,30 @@ import jeco.core.problem.Solutions;
 import jeco.core.problem.Variable;
 import jeco.core.util.random.RandomGenerator;
 
+/**
+ * BinaryTournamentNSGAII is a selection operator that selects the best individual
+ * from a pair of individuals. To do so, it uses the NSGA-II dominance comparator
+ * based on the dominance relation and the crowding distance.
+ * 
+ * @param <T> Variable type
+ */
 public class BinaryTournamentNSGAII<T extends Variable<?>> extends SelectionOperator<T> {
 
     private static final Logger logger = Logger.getLogger(BinaryTournamentNSGAII.class.getName());
+
+    /**
+     * Comparator used to compare individuals
+     */
     protected Comparator<Solution<T>> comparator;
 
     /**
-     * Constructor
-     * TODO: Creates a new instance of the Binary tournament operator (Deb's
-     * NSGA-II implementation version)
+     * Creates a new instance of BinaryTournamentNSGAII
      */
     public BinaryTournamentNSGAII() {
         comparator = new SolutionDominance<T>();
     } // BinaryTournament2
 
-    /**
-     * Performs the operation
-     * @param object Object representing a SolutionSet
-     * @return the selected solution
-     */
+    @Override
     public Solutions<T> execute(Solutions<T> population) {
         Solutions<T> result = new Solutions<T>();
         int popSize = population.size();
