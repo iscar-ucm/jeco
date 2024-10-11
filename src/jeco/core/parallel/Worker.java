@@ -17,7 +17,7 @@
  * Contributors:
  *  - José Luis Risco Martín
  */
-package jeco.core.optimization.threads;
+package jeco.core.parallel;
 
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -29,17 +29,34 @@ import jeco.core.problem.Solutions;
 import jeco.core.problem.Variable;
 
 /**
- *
- * @author jlrisco
+ * Worker thread for parallel evaluation of solutions.
+ * 
+ * @param <V> Variable type.
  */
 public class Worker<V extends Variable<?>> extends Thread {
 
     private static final Logger logger = Logger.getLogger(Worker.class.getName());
 
+    /**
+     * Problem to be solved.
+     */
     protected Problem<V> problem;
+    /**
+     * Shared queue of solutions.
+     */
     protected LinkedBlockingQueue<Solution<V>> sharedQueue = null;
+    /**
+     * Number of solutions to be evaluated.
+     */
     protected int numSolutions = 1;
 
+    /**
+     * Constructor.
+     * 
+     * @param problem Problem to be solved.
+     * @param sharedQueue Shared queue of solutions.
+     * @param numSolutions Number of solutions to be evaluated.
+     */
     public Worker(Problem<V> problem, LinkedBlockingQueue<Solution<V>> sharedQueue, int numSolutions) {
         this.problem = problem;
         this.sharedQueue = sharedQueue;

@@ -17,7 +17,7 @@
  * Contributors:
  *  - José Luis Risco Martín
  */
-package jeco.core.optimization.threads;
+package jeco.core.parallel;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -36,15 +36,42 @@ import jeco.core.util.logger.JecoLogger;
 
 import java.io.File;
 
+/**
+ * Master/worker pattern for parallel evaluation of solutions.
+ * 
+ * @param <V> Variable type.
+ */
 public class MasterWorkerThreads<V extends Variable<?>> extends Problem<V> {
 
     private static final Logger logger = Logger.getLogger(MasterWorkerThreads.class.getName());
+    /**
+     * Algorithm to be executed.
+     */
     protected Algorithm<V> algorithm = null;
+    /**
+     * Problem to be solved.
+     */
     protected Problem<V> problem = null;
+    /**
+     * Shared queue of solutions.
+     */
     protected LinkedBlockingQueue<Solution<V>> sharedQueue = new LinkedBlockingQueue<>();
+    /**
+     * Clones of the problem for each worker.
+     */
     protected ArrayList<Problem<V>> problemClones = new ArrayList<>();
+    /**
+     * Number of workers.
+     */
     protected Integer numWorkers = null;
 
+    /**
+     * Constructor.
+     * 
+     * @param algorithm Algorithm to be executed.
+     * @param problem Problem to be solved.
+     * @param numWorkers Number of workers.
+     */
     public MasterWorkerThreads(Algorithm<V> algorithm, Problem<V> problem, Integer numWorkers) {
         super(problem.getNumberOfVariables(), problem.getNumberOfObjectives());
         for (int i = 0; i < numberOfVariables; ++i) {
@@ -59,6 +86,12 @@ public class MasterWorkerThreads<V extends Variable<?>> extends Problem<V> {
         }
     }
 
+    /**
+     * Constructor.
+     * 
+     * @param algorithm Algorithm to be executed.
+     * @param problem Problem to be solved.
+     */
     public MasterWorkerThreads(Algorithm<V> algorithm, Problem<V> problem) {
         this(algorithm, problem, Runtime.getRuntime().availableProcessors());
     }
@@ -97,6 +130,10 @@ public class MasterWorkerThreads<V extends Variable<?>> extends Problem<V> {
         return problem.newRandomSetOfSolutions(size);
     }
 
+    /**
+     * Execute the algorithm.
+     * @return Solutions.
+     */
     public Solutions<V> execute() {
         algorithm.setProblem(this);
         algorithm.initialize();
