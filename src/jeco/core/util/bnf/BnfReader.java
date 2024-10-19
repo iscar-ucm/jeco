@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2016 José Luis Risco Martín <jlrisco@ucm.es>
+ * Copyright (C) 2010 José Luis Risco Martín <jlrisco@ucm.es>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,13 +27,28 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+/**
+ * Class to read a BNF grammar from a file.
+ */
 public class BnfReader {
 
+    /**
+     * List of rules in the grammar.
+     */
     protected ArrayList<Rule> rules = new ArrayList<>();
 
+    /**
+     * Constructor.
+     */
     public BnfReader() {
     }
 
+    /**
+     * Load a BNF grammar from a file.
+     *
+     * @param pathToBnfFile Path to the file containing the BNF grammar.
+     * @return True if the grammar was loaded successfully, false otherwise.
+     */
     public boolean load(String pathToBnfFile) {
         boolean res = false;
         try {
@@ -56,6 +71,12 @@ public class BnfReader {
         return res;
     }
 
+    /**
+     * Read a BNF grammar from a string.
+     *
+     * @param bnfString String containing the BNF grammar.
+     * @return True if the grammar was read successfully, false otherwise.
+     */
     public boolean readBNFString2(String bnfString) {
         int START = 0;
         int START_RULE = 1;
@@ -85,6 +106,12 @@ public class BnfReader {
         return true;
     }
 
+    /**
+     * Read a BNF grammar from a string.
+     *
+     * @param bnfString String containing the BNF grammar.
+     * @return True if the grammar was read successfully, false otherwise.
+     */
     public boolean readBNFString(String bnfString) {
         Rule newRule = new Rule(); // Used to create new rules for grammar
         boolean insertRule = false;// If newRule is to be inserted onto grammar
@@ -460,6 +487,11 @@ public class BnfReader {
         return true;
     }
 
+    /**
+     * Find a rule in the grammar.
+     * @param symbol Symbol to find.
+     * @return Rule that defines the symbol.
+     */
     public Rule findRule(Symbol symbol) {
         for (Rule rule : rules) {
             if (rule.lhs.equals(symbol)) {
@@ -469,6 +501,11 @@ public class BnfReader {
         return null;
     }
 
+    /**
+     * Find a rule in the grammar.
+     * @param symbolString String of the symbol to find.
+     * @return Rule that defines the symbol.
+     */
     public Rule findRule(String symbolString) {
         for (Rule rule : rules) {
             if (rule.lhs.symbolString.equals(symbolString)) {
@@ -478,6 +515,10 @@ public class BnfReader {
         return null;
     }
 
+    /**
+     * Check if the grammar has infinite recursion.
+     * @throws Exception If infinite recursion is found.
+     */
     public void checkInfiniteRecursion() throws Exception {
         for (Rule rule : rules) {
             if (isInfinitlyRecursive(rule)) {
@@ -487,6 +528,12 @@ public class BnfReader {
         }
     }
 
+    /**
+     * Check if a rule is infinitely recursive.
+     * @param startRule Rule to check.
+     * @return True if the rule is infinitely recursive, false otherwise.
+     * @throws Exception If no rule is found for a symbol.
+     */
     public boolean isInfinitlyRecursive(Rule startRule) throws Exception {
         LinkedList<Rule> rulesToVisit = new LinkedList<Rule>();
         ArrayList<Rule> visitedRules = new ArrayList<Rule>();
@@ -518,6 +565,9 @@ public class BnfReader {
         return true;
     }
 
+    /**
+     * Update the fields of the rules.
+     */
     void updateRuleFields() {
         ArrayList<Rule> visitedRules = new ArrayList<Rule>();
         clearRuleFields();
@@ -536,6 +586,9 @@ public class BnfReader {
         }
     }
 
+    /**
+     * Clear the fields of the rules.
+     */
     public void clearRuleFields() {
         for (Rule rule : rules) {
             rule.minimumDepth = Integer.MAX_VALUE >> 1;
@@ -543,6 +596,12 @@ public class BnfReader {
         }
     }
 
+    /**
+     * Check if a rule is recursive.
+     * @param visitedRules List of visited rules.
+     * @param currentRule Rule to check.
+     * @return True if the rule is recursive, false otherwise.
+     */
     boolean isRecursive(ArrayList<Rule> visitedRules, Rule currentRule) {
         ArrayList<Production> prodIt;
         Rule definingRule;
@@ -579,6 +638,11 @@ public class BnfReader {
         return false;
     }
 
+    /**
+     * Calculate the minimum depth of a rule.
+     * @param startRule Rule to calculate the minimum depth.
+     * @param visitedRules List of visited rules.
+     */
     public void calculateMinimumDepthRecursive(Rule startRule, ArrayList<Rule> visitedRules) {
 
         if (!visitedRules.contains(startRule)) {
@@ -605,6 +669,10 @@ public class BnfReader {
         }
     }
 
+    /**
+     * Set the minimum depth of the productions of a rule.
+     * @param rule Rule to set the minimum depth.
+     */
     public void setProductionMinimumDepth(Rule rule) {
         int minDepth;
         for (Production production : rule) {
@@ -623,6 +691,10 @@ public class BnfReader {
         }
     }
 
+    /**
+     * Get the rules of the grammar.
+     * @return List of rules.
+     */
     public ArrayList<Rule> getRules() {
         return rules;
     }

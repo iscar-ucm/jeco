@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2016 José Luis Risco Martín <jlrisco@ucm.es>
+ * Copyright (C) 2010 José Luis Risco Martín <jlrisco@ucm.es>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,14 +21,29 @@ package jeco.core.util.bnf;
 
 import java.util.ArrayList;
 
+/**
+ * Represents a rule in a BNF grammar.
+ */
 public class Rule extends ArrayList<Production> {
 
     private static final long serialVersionUID = 1L;
     //Variables
+    /**
+     * Recursive nature of rule
+     */
     protected boolean recursive = false;// Recursive nature of rule
+    /**
+     * Minimum depth of parse tree for production to map to terminal symbol(s)
+     */
     protected int minimumDepth = Integer.MAX_VALUE >> 1;	// Minimum depth of parse tree for production to map to terminal symbol(s)
+    /**
+     * Left hand side symbol of the rule
+     */
     protected Symbol lhs = null; //Left hand side symbol of the rule
 
+    /**
+     * Constructor
+     */
     public Rule() {
         super();
     }
@@ -45,6 +60,7 @@ public class Rule extends ArrayList<Production> {
         return clone;
     }
 
+    @Override
     public String toString() {
         StringBuilder buffer = new StringBuilder();
         buffer.append(lhs.symbolString);

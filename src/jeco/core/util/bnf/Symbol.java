@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2016 José Luis Risco Martín <jlrisco@ucm.es>
+ * Copyright (C) 2010 José Luis Risco Martín <jlrisco@ucm.es>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,13 +19,27 @@
  */
 package jeco.core.util.bnf;
 
+/**
+ * Class to represent a symbol in a grammar
+ * 
+ * @version 1.0
+ */
 public class Symbol {
+	/**
+	 * Enum to represent the type of the symbol
+	 */
 	public static enum SYMBOL_TYPE {
 		NT_SYMBOL, T_SYMBOL
 	};
 
 	// Variables
+	/**
+	 * Symbol type
+	 */
 	protected SYMBOL_TYPE type; // Symbol type
+	/**
+	 * Symbol string
+	 */
 	protected String symbolString;
 
 	/*
@@ -33,28 +47,54 @@ public class Symbol {
 	 * }
 	 */
 
+	/**
+	 * Constructor
+	 * 
+	 * @param symbolString Symbol string
+	 * @param type         Symbol type
+	 */
 	public Symbol(String symbolString, SYMBOL_TYPE type) {
 		this.type = type;
 		this.symbolString = symbolString;
 	}
 
+	/**
+	 * Constructor
+	 * 
+	 * @param type Symbol type
+	 */
 	public Symbol(SYMBOL_TYPE type) {
 		this("", type);
 	}
 
+	/**
+	 * Constructor
+	 */
 	public Symbol() {
 		this(Symbol.SYMBOL_TYPE.T_SYMBOL);
 	}
 
+	@Override
 	public Symbol clone() {
 		Symbol clone = new Symbol(this.symbolString, this.type);
 		return clone;
 	}
 
+	/**
+	 * Check if a symbol is equal to another
+	 * 
+	 * @param right Symbol to compare
+	 * @return True if the symbols are equal, false otherwise
+	 */
 	public boolean equals(Symbol right) {
 		return symbolString.equals(right.symbolString) && (type == right.type);
 	}
 
+	/**
+	 * Checks if a symbol is terminal
+	 * 
+	 * @return True if the symbol is terminal, false otherwise
+	 */
 	public boolean isTerminal() {
 		return type == SYMBOL_TYPE.T_SYMBOL;
 	}
@@ -72,6 +112,7 @@ public class Symbol {
 	 * public void clear() { this.symbolString = null; this.type = null; }
 	 */
 
+	@Override
 	public String toString() {
 		return this.symbolString;
 	}

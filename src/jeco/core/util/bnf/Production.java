@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2016 José Luis Risco Martín <jlrisco@ucm.es>
+ * Copyright (C) 2010 José Luis Risco Martín <jlrisco@ucm.es>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,11 +21,23 @@ package jeco.core.util.bnf;
 
 import java.util.ArrayList;
 
+/**
+ * Represents a production in a BNF grammar.
+ * A production is a list of symbols.
+ * The production can be recursive and have a minimum depth.
+ * The minimum depth is the minimum number of non-terminal symbols that must be expanded to reach a terminal symbol
+ */
 public class Production extends ArrayList<Symbol> {
 
 	private static final long serialVersionUID = 1L;
 	// Variables
+    /**
+     * Recursive nature of production
+     */
     protected boolean recursive; // Recursive nature of production
+    /**
+     * Minimum depth of parse tree for production to map to terminal symbol(s)
+     */
     protected int minimumDepth; // Minimum depth of parse tree for production to map to terminal symbol(s)
     
     /*public Production(int newLength){
@@ -34,10 +46,14 @@ public class Production extends ArrayList<Symbol> {
         setMinimumDepth(Integer.MAX_VALUE>>1);
     }*/
     
+    /**
+     * Default constructor
+     */
     public Production(){
         super();
     }
-    
+
+    @Override
     public Production clone() {
     	Production clone = new Production();
     	for(Symbol symbol : this) {
@@ -48,6 +64,7 @@ public class Production extends ArrayList<Symbol> {
     	return clone;
     }
     
+    @Override
     public String toString() {
         StringBuilder buffer = new StringBuilder();
         for(int i = 0;i<this.size();i++) {
