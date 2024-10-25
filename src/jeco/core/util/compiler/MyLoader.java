@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2016 José Luis Risco Martín <jlrisco@ucm.es>
+ * Copyright (C) 2010 José Luis Risco Martín <jlrisco@ucm.es>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,6 +16,7 @@
  *
  * Contributors:
  *  - José Luis Risco Martín
+ *  - J. M. Colmenar
  */
 package jeco.core.util.compiler;
 
@@ -28,15 +29,20 @@ import java.util.logging.Logger;
 /**
  * Compiles source and also makes sure that reloading a compiled class does not
  * "caches" the first compiled class.
- *
- * @author José Luis Risco Martín
- * @author J. M. Colmenar
  */
 public class MyLoader extends ClassLoader {
 
     private static final Logger logger = Logger.getLogger(MyLoader.class.getName());
+    /**
+     * Directory where the compiled classes are stored.
+     */
     protected String compilationDir;
 
+    /**
+     * Constructor.
+     *
+     * @param compilationDir Directory where the compiled classes are stored.
+     */
     public MyLoader(String compilationDir) {
         this.compilationDir = compilationDir;
     }

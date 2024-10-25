@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2016 José Luis Risco Martín <jlrisco@ucm.es>
+ * Copyright (C) 2010 José Luis Risco Martín <jlrisco@ucm.es>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,6 +16,7 @@
  *
  * Contributors:
  *  - José Luis Risco Martín
+ *  - J. M. Colmenar
  */
 package jeco.core.util.compiler;
 
@@ -32,22 +33,41 @@ import javax.tools.ToolProvider;
 /**
  * Compiles source and also makes sure that reloading a compiled class
  * does not "caches" the first compiled class.
- * 
- * @author José Luis Risco Martín
- * @author J. M. Colmenar
  */
 public class MyCompiler {
 
+    /**
+     * Console output of the compiler
+     */
     protected StringBuffer console;
+    /**
+     * Working directory
+     */
     protected String workDir;
+    /**
+     * Class path separator
+     */
     protected String classPathSeparator;
 
+    /**
+     * Constructor
+     *
+     * @param workDir Working directory
+     * @param classPathSeparator Class path separator
+     */
     public MyCompiler(String workDir, String classPathSeparator) {
         console = new StringBuffer();
         this.workDir = workDir;
         this.classPathSeparator = classPathSeparator;
     }
 
+    /**
+     * Compiles a collection of files
+     *
+     * @param filePaths Collection of file paths
+     * @return True if the compilation was successful
+     * @throws Exception
+     */
     public boolean compile(Collection<String> filePaths) throws Exception {
         console.delete(0, console.length());
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
@@ -93,14 +113,26 @@ public class MyCompiler {
         return success;
     }
 
+    /**
+     * Gets the console output
+     * @return Console output
+     */
     public String getOutput() {
         return console.toString();
     }
     
+    /**
+     * Gets the working directory
+     * @return Working directory
+     */
     public String getWorkDir() {
         return workDir;
     }
     
+    /**
+     * Gets the class path separator
+     * @return Class path separator
+     */
     public String getClassPathSeparator() {
         return classPathSeparator;
     }
