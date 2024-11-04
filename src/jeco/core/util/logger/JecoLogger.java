@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2016 José Luis Risco Martín <jlrisco@ucm.es>
+ * Copyright (C) 2010 José Luis Risco Martín <jlrisco@ucm.es>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,11 +26,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
- * @author José Luis Risco Martín
+ * Logger class to setup the logger.
  */
 public class JecoLogger {
 
+    /**
+     * Setup the logger with the specified file path and level.
+     *
+     * @param filePath the file path
+     * @param level the level
+     */
     public static void setup(String filePath, Level level) {
         Logger logger = Logger.getLogger("");
         logger.setLevel(level);
@@ -50,10 +55,17 @@ public class JecoLogger {
         }
     }
 
+    /**
+     * Setup the logger with the specified level.
+     * @param level the level
+     */
     public static void setup(Level level) {
         setup("logger.log", level);
     }
 
+    /**
+     * Setup the logger with the default file path and level.
+     */
     public static void setup() {
         setup("logger.log", Level.INFO);
     }

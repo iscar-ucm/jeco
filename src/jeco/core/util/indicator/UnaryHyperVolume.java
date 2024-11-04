@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2016 José Luis Risco Martín <jlrisco@ucm.es>
+ * Copyright (C) 2010 José Luis Risco Martín <jlrisco@ucm.es>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,6 +65,12 @@ public class UnaryHyperVolume {
    */
   ArrayList<ArrayList<Double>> hyperVolumes;
 
+  /**
+   * Constructor
+   * @param pathsToDataFiles Paths to the files containing the fronts
+   * @throws FileNotFoundException
+   * @throws IOException
+   */
   public UnaryHyperVolume(ArrayList<String> pathsToDataFiles) throws FileNotFoundException, IOException {
     fronts = new ArrayList<ArrayList<Solutions<Variable<?>>>>();
     for (String filePath : pathsToDataFiles) {
@@ -92,11 +98,21 @@ public class UnaryHyperVolume {
     nadir = null;
   }
 
+  /**
+   * Constructor
+   * @param pathsToDataFiles Paths to the files containing the fronts
+   * @param pathToReferenceFront Path to the file containing the reference front
+   * @throws FileNotFoundException
+   * @throws IOException
+   */
   public UnaryHyperVolume(ArrayList<String> pathsToDataFiles, String pathToReferenceFront) throws FileNotFoundException, IOException {
     this(pathsToDataFiles);
     referenceFront = Solutions.readFrontFromFile(pathToReferenceFront);
   }
 
+  /**
+   * Normalize the fronts and the reference front
+   */
   public void normalize() {
     ArrayList<Solutions<Variable<?>>> totalSet = new ArrayList<Solutions<Variable<?>>>();
     for (int i = 0; i < fronts.size(); ++i) {
@@ -115,6 +131,9 @@ public class UnaryHyperVolume {
     }
   }
 
+  /**
+   * Compute the reference points
+   */
   private void computeReferencePoints() {
     nadir = new double[dim];
     for (int i = 0; i < dim; ++i) {
@@ -149,6 +168,10 @@ public class UnaryHyperVolume {
     }
   }
 
+  /**
+   * Calculate the hypervolumes
+   * @return The hypervolumes
+   */
   public ArrayList<ArrayList<Double>> calculateHyperVolumes() {
     if (nadir == null) {
       computeReferencePoints();
@@ -221,6 +244,13 @@ public class UnaryHyperVolume {
    }
    return (!worse_in_any_objective);
    }*/
+
+  /**
+   * Swap two points in a front
+   * @param front The front
+   * @param i Point i
+   * @param j Point j
+   */
   private void swap(Solutions<Variable<?>> front, int i, int j) {
     Solution<Variable<?>> tempI, tempJ;
 
@@ -320,6 +350,13 @@ public class UnaryHyperVolume {
     return n;
   }
 
+  /**
+   * Calculate the hypervolume of a front
+   * @param front The front
+   * @param no_points Number of points
+   * @param no_objectives Number of objectives
+   * @return The hypervolume
+   */
   private double calcHypervolume(Solutions<Variable<?>> front, int no_points, int no_objectives) {
     int n;
     double volume, distance;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2016 José Luis Risco Martín <jlrisco@ucm.es>
+ * Copyright (C) 2010 José Luis Risco Martín <jlrisco@ucm.es>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,15 +24,30 @@ import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 
 /**
- *
- * @author jlrisco
+ * Formatter for the logger. It formats the log records in the following way:
+ * [LEVEL-THREAD|TIME]: MESSAGE
+ * where LEVEL is the level of the log record, THREAD is the name of the thread
+ * that generated the log record, TIME is the time elapsed since the start of the
+ * program and MESSAGE is the message of the log record.
  */
 public class LoggerFormatter extends Formatter {
 
+  /**
+   * Message format for the log records.
+   */
   private static final MessageFormat messageFormat = new MessageFormat("[{0}-{1}|{2}]: {3} \n");
+  /**
+   * Singleton instance of the formatter.
+   */
   public static final LoggerFormatter formatter = new LoggerFormatter();
+  /**
+   * Time when the program started.
+   */
   protected long startTime;
 
+  /**
+   * Constructs a new formatter.
+   */
   public LoggerFormatter() {
     super();
     startTime = System.currentTimeMillis();
@@ -48,6 +63,12 @@ public class LoggerFormatter extends Formatter {
     return messageFormat.format(arguments);
   }
 
+  /**
+   * Returns the time elapsed since the start of the program in the format
+   * HH:MM:SS.mmm.
+   * @param currentTime the current time.
+   * @return the time elapsed since the start of the program.
+   */
   public String getElapsedTime(long currentTime) {
     long elapsedTime = currentTime - startTime;
     long elapsedTimeInSeconds = elapsedTime / 1000;
