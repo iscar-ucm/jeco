@@ -86,7 +86,6 @@ public class SinglePointCrossover<T extends Variable<?>> extends CrossoverOperat
     /**
      * Constructor
      * @param problem Problem being optimized
-     * @param fixedCrossoverPoint Fixed crossover point
      */
     public SinglePointCrossover(Problem<T> problem) {
         this(problem, DEFAULT_FIXED_CROSSOVER_POINT, DEFAULT_PROBABILITY, ALLOW_REPETITION);
@@ -212,8 +211,9 @@ public class SinglePointCrossover<T extends Variable<?>> extends CrossoverOperat
     /**
      * Executes the operation
      *
-     * @param object An object containing an array of two parents
-     * @return An object containing the offSprings
+     * @param parent1 Parent 1
+     * @param parent2 Parent 2
+     * @return Offspring
      */
     public Solutions<T> execute(Solution<T> parent1, Solution<T> parent2) {
         return doCrossover(probability, parent1, parent2);

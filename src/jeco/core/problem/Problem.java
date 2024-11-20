@@ -22,6 +22,7 @@ package jeco.core.problem;
 
 /**
  * Class representing a problem.
+ * @param <V> Type of the variables of the problem.
  */
 public abstract class Problem<V extends Variable<?>> {
   /**

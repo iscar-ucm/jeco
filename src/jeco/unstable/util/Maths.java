@@ -276,11 +276,10 @@ public class Maths {
         }
     }
     
-    /**
-     * This method calculates the correlation of two lists of numbers.
-     * @param x The first list of numbers
-     * @param h The second list of numbers
-     * @return The correlation of the two lists
+    /** 
+     * This method calculates the difference in a list of numbers.
+     * @param numbers List of numbers
+     * @return The difference of the numbers
      */
     public static double[] diff(double[] numbers) {
         if (!Double.isNaN(numbers[0])){

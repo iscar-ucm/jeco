@@ -36,7 +36,8 @@ import jeco.core.util.random.RandomGenerator;
  * 
  * Global minimum: f(x) = 0, x_i = 0
  * 
- * @see http://www-optima.amp.i.kyoto-u.ac.jp/member/student/hedar/Hedar_files/TestGO_files/Page2607.htm
+ * For more information, visit:
+ * http://www-optima.amp.i.kyoto-u.ac.jp/member/student/hedar/Hedar_files/TestGO_files/Page2607.htm
  */
 public class Rastringin extends Problem<Variable<Double>> {
 

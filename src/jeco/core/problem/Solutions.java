@@ -88,7 +88,6 @@ public class Solutions<V extends Variable<?>> extends ArrayList<Solution<V>> {
    * @param filePath File path
    * @return The set of solutions in the archive.
    * @throws IOException 
-   * @throws java.lang.Exception
    */
   public static Solutions<Variable<?>> readFrontFromFile(String filePath) throws IOException {
       Solutions<Variable<?>> solutions = new Solutions<Variable<?>>();

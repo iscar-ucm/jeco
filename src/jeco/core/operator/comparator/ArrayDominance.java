@@ -28,11 +28,6 @@ import java.util.Comparator;
  * Compares two arrays of doubles. The comparison is done element by element.
  * If the first array is bigger than the second in some element and smaller in
  * another, the arrays are considered indifferent.
- * 
- * @param left the first array to compare
- * @param right the second array to compare
- * @return -1 if left is smaller than right, 0 if they are indifferent, 1 if
- *         left is bigger than right
  */
 public class ArrayDominance implements Comparator<ArrayList<Double>> {
 

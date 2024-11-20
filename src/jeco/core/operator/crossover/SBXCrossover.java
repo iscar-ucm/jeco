@@ -63,7 +63,6 @@ public class SBXCrossover<V extends Variable<Double>>  extends CrossoverOperator
     /**
      * Constructor
      * @param problem Problem
-     * @param eta_c Index for crossover
      */
     public SBXCrossover(Problem<V> problem) {
         this(problem, DEFAULT_ETA_C, DEFAULT_PROBABILITY);
@@ -166,9 +165,10 @@ public class SBXCrossover<V extends Variable<Double>>  extends CrossoverOperator
     } // doCrossover
 
     /**
-     * Executes the operation
-     * @param object An object containing an array of two parents
-     * @return An object containing the offSprings
+     * Executes the crossover operation
+     * @param parent1 First parent
+     * @param parent2 Second parent
+     * @return An object containing the offsprings
      */
     public Solutions<V> execute(Solution<V> parent1, Solution<V> parent2) {
         return doCrossover(probability, parent1, parent2);

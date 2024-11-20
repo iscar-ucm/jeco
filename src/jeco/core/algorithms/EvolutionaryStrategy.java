@@ -137,8 +137,6 @@ public class EvolutionaryStrategy<V extends Variable<?>> extends Algorithm<V> {
      * @param problem Problem to solve
      * @param mutationOperator Mutation operator
      * @param mu Population size
-     * @param rho Recombination offspring number
-     * @param selectionType Selection type
      * @param lambda Number of offspring
      * @param maxGenerations Maximum number of generations
      */
