@@ -1,0 +1,6 @@
+* JECO
+
+JECO is a collection of optimization algorithms developed in JAVA.
+
+The documentation for JECO can be found at https://iscar-ucm.github.io/jeco, and the API documentation is available at https://iscar-ucm.github.io/jeco/apidocs/index.html.
+
