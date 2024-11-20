@@ -1,4 +1,0 @@
-<expr> ::= <expr> <op> <expr>
-           | <var>
-<op> ::= + | * | / | - 
-<var> ::= X
