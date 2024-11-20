@@ -1,3 +1,3 @@
-# ECO
+# JECO
 
-ECO is a collection of optimization algorithms developed in JAVA.
+JECO is a collection of optimization algorithms developed in JAVA.
