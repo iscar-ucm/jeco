@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2016 José Luis Risco Martín <jlrisco@ucm.es>
+ * Copyright (C) 2010 José Luis Risco Martín <jlrisco@ucm.es>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,22 +29,52 @@ import java.util.logging.Logger;
 import jeco.core.problem.GrammaticalEvolutionAbstractProblem;
 
 /**
- * Class to manage a data table. 
- *
- * @author José Luis Risco Martín
+ * This class represents a data table. It is used to store the data that will be
+ * used to evaluate the fitness of the individuals.
+ * 
+ * The data table is a list of rows, where each row is an array of doubles. The
+ * first columns are the input columns, and the last column is the output column.
  */
 public class DataTable {
 
     private static final Logger LOGGER = Logger.getLogger(DataTable.class.getName());
 
+    /**
+     * The problem that uses this data table.
+     */
     protected GrammaticalEvolutionAbstractProblem problem = null;
+    /**
+     * The path to the data file.
+     */
     protected String path = null;
+    /**
+     * The data table.
+     */
     protected ArrayList<double[]> data = new ArrayList<>();
+    /**
+     * The number of input columns.
+     */
     protected int numInputColumns = 0;
+    /**
+     * The number of total columns.
+     */
     protected int numTotalColumns = 0;
 
+    /**
+     * The best fitness found so far.
+     */
     protected double bestFitness = Double.POSITIVE_INFINITY;
 
+    /**
+     * Constructor.
+     * 
+     * @param problem
+     *            The problem that uses this data table.
+     * @param dataPath
+     *            The path to the data file.
+     * @throws IOException
+     *             If there is an error reading the data file.
+     */
     public DataTable(GrammaticalEvolutionAbstractProblem problem, String dataPath) throws IOException {
         this.problem = problem;
         this.path = dataPath;
@@ -53,6 +83,14 @@ public class DataTable {
         LOGGER.info("... done.");
     }
 
+    /**
+     * Load the data from the file.
+     * 
+     * @param dataPath
+     *            The path to the data file.
+     * @throws IOException
+     *             If there is an error reading the data file.
+     */
     public final void loadData(String dataPath) throws IOException {
         data.clear();
         BufferedReader reader = new BufferedReader(new FileReader(new File(dataPath)));
@@ -161,6 +199,10 @@ public class DataTable {
         LOGGER.info("... done.");
     }*/
 
+    /**
+     * Compute the fitness of the individuals.
+     * @return The fitness of the individuals.
+     */
     public double computeFIT() {
         double meanXref = 0.0;
         for (int i = 0; i < data.size(); ++i) {
@@ -177,14 +219,26 @@ public class DataTable {
         return fit;
     }
 
+    /**
+     * Get the data table.
+     * @return The data table.
+     */
     public ArrayList<double[]> getData() {
         return data;
     }
     
+    /**
+     * Get the path to the data file.
+     * @return The path to the data file.
+     */
     public String getPath() {
         return path;
     }
-    
+
+    /**
+     * Get the number of input columns.
+     * @return The number of input columns.
+     */
     public int getPredictorColumn() {
         return numInputColumns;
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2016 José Luis Risco Martín <jlrisco@ucm.es>
+ * Copyright (C) 2010 José Luis Risco Martín <jlrisco@ucm.es>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,19 +16,27 @@
  *
  * Contributors:
  *  - José Luis Risco Martín
+ *  - Josué Pagán Ortiz
  */
 package jeco.unstable.util;
 
 /**
- *
- * @author José Luis Risco Martín <jlrisco at ucm.es>
- * @author Josué Pagán Ortiz <jpagan at ucm.es>
+ * This class is used to perform Fast Fourier Transforms.
  */
 public class FastFourierTransformer {
 
+    /**
+     * Creates a new FastFourierTransformer.
+     */
     public FastFourierTransformer() {
     }
 
+    /**
+     * Completes the array with zeros until the next power of 2.
+     * 
+     * @param x the array to complete.
+     * @return the array completed with zeros.
+     */
     public static Complex[] completeWithZero(Complex[] x) {
         int powerOfTwo = 1;
         long maxPowerOfTo = 2147483648L;
@@ -45,6 +53,12 @@ public class FastFourierTransformer {
         return xx;
     }
     
+    /**
+     * Completes the array with zeros until the next power of 2.
+     * @param cc the array to complete.
+     * @param length the length of the array to complete.
+     * @return the array completed with zeros.
+     */
     public static Complex[] zeroPadding(Complex[] cc, int length) {
         Complex ZERO = new Complex(0, 0);
 
@@ -69,6 +83,11 @@ public class FastFourierTransformer {
         return completeWithZero(c);
     }
 
+    /**
+     * Transforms an array of doubles into an array of Complex numbers.
+     * @param x the array of doubles.
+     * @return the array of Complex numbers.
+     */
     public static Complex[] doubleToComplex(double[] x) {
         Complex[] c = new Complex[x.length];
         
@@ -78,6 +97,11 @@ public class FastFourierTransformer {
         return c;
     }
     
+    /**
+     * Computes the FFT of the array of Complex numbers.
+     * @param xx the array of Complex numbers.
+     * @return the FFT of the array of Complex numbers.
+     */
     public static Complex[] fft(Complex[] xx) {
         Complex[] x = completeWithZero(xx);
         int N = x.length;
@@ -117,11 +141,20 @@ public class FastFourierTransformer {
         return y;
     }
     
+    /**
+     * Computes the FFT of the array of doubles.
+     * @param x the array of doubles.
+     * @return the FFT of the array of doubles.
+     */
     public static Complex[] fft(double[] x) {
         return fft(doubleToComplex(x));
     }
     
-    // compute the inverse FFT of x[], assuming its length is a power of 2
+    /**
+     * Computes the inverse FFT of the array of Complex numbers.
+     * @param x the array of Complex numbers.
+     * @return the inverse FFT of the array of Complex numbers.
+     */
     public static Complex[] ifft(Complex[] x) {
         int N = x.length;
         Complex[] y = new Complex[N];
@@ -147,11 +180,21 @@ public class FastFourierTransformer {
         return y;
     }
     
+    /**
+     * Computes the inverse FFT of the array of doubles.
+     * @param x the array of doubles.
+     * @return the inverse FFT of the array of doubles.
+     */
     public static Complex[] ifft(double[] x) {
         return ifft(doubleToComplex(x));
     }
     
-    // compute the circular convolution of x and y
+    /**
+     * Computes the circular convolution of two arrays of Complex numbers.
+     * @param xx the first array of Complex numbers.
+     * @param yy the second array of Complex numbers.
+     * @return the circular convolution of the two arrays of Complex numbers.
+     */
     public static Complex[] cconvolve(Complex[] xx, Complex[] yy) {
         // Pad x and y with 0s so that they have same length
         // and are powers of 2
@@ -177,11 +220,22 @@ public class FastFourierTransformer {
     }
     
 
+    /**
+     * Computes the circular convolution of two arrays of doubles.
+     * @param x the first array of doubles.
+     * @param y the second array of doubles.
+     * @return the circular convolution of the two arrays of doubles.
+     */
     public static Complex[] cconvolve(double[] x, double[] y) {
         return cconvolve(doubleToComplex(x), doubleToComplex(y));
     }
     
-    // compute the linear convolution of x and y
+    /**
+     * Computes the linear convolution of two arrays of Complex numbers.
+     * @param x the first array of Complex numbers.
+     * @param y the second array of Complex numbers.
+     * @return the linear convolution of the two arrays of Complex numbers.
+     */
     public static Complex[] convolve(Complex[] x, Complex[] y) {
         Complex ZERO = new Complex(0, 0);
 
@@ -204,11 +258,21 @@ public class FastFourierTransformer {
         return cconvolve(a, b);
     }
 
+    /**
+     * Computes the linear convolution of two arrays of doubles.
+     * @param x the first array of doubles.
+     * @param y the second array of doubles.
+     * @return the linear convolution of the two arrays of doubles.
+     */
     public static Complex[] convolve(double[] x, double[] y) {
         return convolve(doubleToComplex(x), doubleToComplex(y));
     }
 
-    // display an array of Complex numbers to standard output
+    /**
+     * Shows the array of Complex numbers.
+     * @param x the array of Complex numbers.
+     * @param title the title of the array.
+     */
     public static void show(Complex[] x, String title) {
         System.out.println(title);
         System.out.println("-------------------");

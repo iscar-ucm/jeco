@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2010-2016 José Luis Risco Martín <jlrisco@ucm.es>
+ * Copyright (C) 2010 José Luis Risco Martín <jlrisco@ucm.es> and Josué 
+ * Pagán Ortiz <j.pagan@upm.es>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,6 +17,7 @@
  *
  * Contributors:
  *  - José Luis Risco Martín
+ *  - Josué Pagán Ortiz
  */
 package jeco.unstable.util;
 
@@ -23,12 +25,16 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- *
- * @author José Luis Risco Martín <jlrisco at ucm.es>
- * @author Josué Pagán Ortiz <jpagan at ucm.es>
+ * This class contains a set of mathematical functions that are used in the
+ * calculation of the statistics of the data.
  */
 public class Maths {
     
+    /**
+     * This method calculates the sum of a list of numbers.
+     * @param numbers List of numbers
+     * @return The sum of the numbers
+     */
     public static double sum(List<Double> numbers) {
         double res = 0;
         for (Double number : numbers) {
@@ -37,6 +43,11 @@ public class Maths {
         return res;
     }
     
+    /**
+     * This method calculates the sum of an array of numbers.
+     * @param numbers Array of numbers
+     * @return The sum of the numbers
+     */
     public static double sum(double[] numbers) {
         double res = 0;
         if (!Double.isNaN(numbers[0])){
@@ -50,6 +61,11 @@ public class Maths {
         }
     }
     
+    /**
+     * This method calculates the mean of a list of numbers.
+     * @param numbers List of numbers
+     * @return The mean of the numbers
+     */
     public static double mean(List<Double> numbers) {
         if (numbers.isEmpty()) {
             return 0;
@@ -58,6 +74,11 @@ public class Maths {
         return res;
     }
     
+    /**
+     * This method calculates the mean of an array of numbers.
+     * @param numbers Array of numbers
+     * @return The mean of the numbers
+     */
     public static double mean(double[] numbers) {
         if (!Double.isNaN(numbers[0])){
             double res = sum(numbers)/numbers.length;
@@ -68,6 +89,11 @@ public class Maths {
         }
     }
     
+    /**
+     * This method calculates the median of a list of numbers.
+     * @param numbers List of numbers
+     * @return The median of the numbers
+     */
     public static double median(List<Double> numbers) {
         Collections.sort(numbers);
         int middle = numbers.size() / 2;
@@ -78,6 +104,11 @@ public class Maths {
         }
     }
     
+    /**
+     * This method calculates the standard deviation of a list of numbers.
+     * @param numbers List of numbers
+     * @return The standard deviation of the numbers
+     */
     public static double std(List<Double> numbers) {
         double res = 0;
         double avg = mean(numbers);
@@ -88,6 +119,11 @@ public class Maths {
         return res;
     }
     
+    /**
+     * This method calculates the standard deviation of an array of numbers.
+     * @param numbers Array of numbers
+     * @return The standard deviation of the numbers
+     */
     public static double std(double[] numbers) {
         if (!Double.isNaN(numbers[0])){
             double res = 0;
@@ -103,7 +139,11 @@ public class Maths {
         }
     }
     
-    
+    /**
+     * This method calculates the minimum of a list of numbers.
+     * @param numbers List of numbers
+     * @return The minimum of the numbers
+     */
     public static double min(double[] numbers) {
         if (!Double.isNaN(numbers[0])){
             double res = Double.POSITIVE_INFINITY;
@@ -119,6 +159,11 @@ public class Maths {
         }
     }
     
+    /**
+     * This method calculates the maximum of a list of numbers.
+     * @param numbers List of numbers
+     * @return The maximum of the numbers
+     */
     public static double max(double[] numbers) {
         if (!Double.isNaN(numbers[0])){
             double res = Double.NEGATIVE_INFINITY;
@@ -134,6 +179,11 @@ public class Maths {
         }
     }
     
+    /**
+     * This method calculates the variance of a list of numbers.
+     * @param numbers List of numbers
+     * @return The variance of the numbers
+     */
     public static double totalVar(double[] numbers) {
         if (!Double.isNaN(numbers[0])){
             double res = 0.0;
@@ -151,6 +201,11 @@ public class Maths {
         }
     }
     
+    /**
+     * This method calculates the power of a list of numbers.
+     * @param numbers List of numbers
+     * @return The power of the numbers
+     */
     public static double pod(double[] numbers) {
         if (!Double.isNaN(numbers[0])){
             double res = 1.0;
@@ -164,6 +219,11 @@ public class Maths {
         }
     }
     
+    /**
+     * This method calculates the geometric mean of a list of numbers.
+     * @param numbers List of numbers
+     * @return The geometric mean of the numbers
+     */
     public static double geoMean(double[] numbers) {
         if (!Double.isNaN(numbers[0])){
             double res = Math.pow(pod(numbers), 1/(numbers.length));
@@ -174,7 +234,12 @@ public class Maths {
         }
     }
     
-    // Temporal functions
+    /**
+     * This method calculates the power of a list of numbers.
+     * @param numbers List of numbers
+     * @param exp Exponent
+     * @return The power of the numbers
+     */
     public static double[] pow(double[] numbers, double exp) {
         if (!Double.isNaN(numbers[0])){
             for (int i = 0; i <= numbers.length-1; i++) {
@@ -187,6 +252,12 @@ public class Maths {
         }
     }
     
+    /**
+     * This method calculates the convolution of two lists of numbers.
+     * @param x The first list of numbers
+     * @param h The second list of numbers
+     * @return The convolution of the two lists
+     */
     public static double[] conv(double[] x, double[] h) {
         if ((!Double.isNaN(x[0])) && (!Double.isNaN(h[0]))){
             double[] res = new double[x.length + h.length - 1];
@@ -205,6 +276,12 @@ public class Maths {
         }
     }
     
+    /**
+     * This method calculates the correlation of two lists of numbers.
+     * @param x The first list of numbers
+     * @param h The second list of numbers
+     * @return The correlation of the two lists
+     */
     public static double[] diff(double[] numbers) {
         if (!Double.isNaN(numbers[0])){
             double[] res = new double[numbers.length-1];
@@ -218,6 +295,11 @@ public class Maths {
         }
     }
     
+    /**
+     * This method calculates the absolute value of a list of numbers.
+     * @param numbers List of numbers
+     * @return The absolute value of the numbers
+     */
     public static double[] abs(double[] numbers) {
         if (!Double.isNaN(numbers[0])){
             for (int i = 0; i <= numbers.length-1; i++) {
@@ -230,6 +312,11 @@ public class Maths {
         }
     }
     
+    /**
+     * This method calculates the absolute value of a list of complex numbers.
+     * @param c List of complex numbers
+     * @return The absolute value of the complex numbers
+     */
     public static double[] abs(Complex[] c) {
         if (!Double.isNaN(c[0].getReal()) && !Double.isNaN(c[0].getImag())){            
             double[] a = new double[c.length];

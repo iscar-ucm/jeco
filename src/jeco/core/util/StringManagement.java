@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2016 José Luis Risco Martín <jlrisco@ucm.es>
+ * Copyright (C) 2010 José Luis Risco Martín <jlrisco@ucm.es>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,20 +15,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * Contributors:
- *  - José Luis Risco Martín
+ *  - Josué Pagán Ortiz
  */
 package jeco.core.util;
 
-
 /**
- *
- * @author josueportiz
+ * This class contains methods to manage strings.
  */
 public class StringManagement {
+    /**
+     * This method checks if a string is an integer.
+     * @param s The string to check.
+     * @return True if the string is an integer, false otherwise.
+     */
     public static boolean isInteger(String s) {
         return isInteger(s,10);
     }
     
+    /**
+     * This method checks if a string is an integer.
+     * @param s The string to check.
+     * @param radix The radix of the number.
+     * @return True if the string is an integer, false otherwise.
+     */
     public static boolean isInteger(String s, int radix) {
         if(s.isEmpty()) return false;
         for(int i = 0; i < s.length(); i++) {
